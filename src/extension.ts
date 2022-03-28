@@ -23,9 +23,9 @@ class ImportSorter {
 
 		const groupedImports = this.getGroupedImportStatements(rawImports);
 
-		const alphabeticallyOrderedImports = this.sortImportsAlphabetically(groupedImports);
+		const alphabeticallyOrderedImportGroups = this.getAlphabeticallySortedImportGroups(groupedImports);
 
-		// TODO: pass alphabeticallyOrderedImports once implemented
+		// TODO: pass alphabeticallyOrderedImportGroups once implemented
 		this.removePreviousImports().then(() => this.insertSortedImports(rawImports));
 	}
 
@@ -69,7 +69,7 @@ class ImportSorter {
 		return [importStatements];
 	}
 
-	private sortImportsAlphabetically(importGroups: string[][]): string[][] {
+	private getAlphabeticallySortedImportGroups(importGroups: string[][]): string[][] {
 		// TODO: implement
 		return importGroups;
 	}
