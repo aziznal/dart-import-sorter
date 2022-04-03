@@ -1,89 +1,144 @@
-import * as vscode from 'vscode';
-import { ImportGroup } from './interfaces/import-group.model';
+import { ImportGroup } from './types/import-group';
+
+type GroupingPreference = {
+    regex: RegExp;
+    order: number;
+};
+
+const GROUP_PREF: GroupingPreference[] = [
+    {
+        regex: /^dart:.*$/m,
+        order: 1,
+    },
+    {
+        regex: /^package:flutter.*$/m,
+        order: 10,
+    },
+    {
+        regex: /^package:[^gym_app].*$/m,
+        order: 100,
+    },
+    {
+        regex: /^package:gym_app.*$/m,
+        order: 101,
+    },
+    // relative imports (./ or ../)
+    {
+        regex: /^\..*$/m,
+        order: 1000,
+    },
+];
 
 export class ImportSorter {
-	documentLines!: string[];
-	textEditor!: vscode.TextEditor;
+    document: string[];
 
-	constructor() {
-		this.textEditor = this.getTextEditor();
-		this.documentLines = this.getDocumentLines();
-	}
+    constructor(document: string[]) {
+        this.document = document;
+    }
 
-	sortImports() {
-		const rawImports = this.getRawImports();
+    get firstImportIndex(): number {
+        // TODO: Implement
+        return 0;
+    }
 
-		const groups = this.groupImports(rawImports);
+    get lastImportIndex(): number {
+        if (this.document === undefined) {
+            return 0;
+        }
 
-		groups.forEach(group => {
-			this.sortAlphabetically(group.imports);
-		});
+        // reversing to find last item that matches
+        const reversedLastIndex = this.document
+            .reverse()
+            .findIndex((statement) => this.isImportStatement(statement))!;
 
-		this.removePreviousImports().then(() => this.insertSortedImports(rawImports));
-	}
+        if (reversedLastIndex === -1) {
+            return 0;
+        }
 
-	private getDocumentLines(): string[] {
-		return this.textEditor.document.getText().split('\n');
-	}
+        // to get real index
+        return this.document?.length - reversedLastIndex;
+    }
 
-	private getTextEditor(): vscode.TextEditor {
-		const textEditor = vscode.window.activeTextEditor!;
+    sortImports(): string {
+        const rawImports = this.getRawImports();
 
-		if (textEditor === undefined) {
-			vscode.window.showErrorMessage("Couldn't sort imports. Are you sure you have an active editor tab open?");
-			throw new Error('Undefined textEditor ref');
-		}
+        const groups = this.groupImports(rawImports);
 
-		return textEditor;
-	}
+        groups.forEach((group) => {
+            group.imports = this.sortAlphabetically(group.imports);
+        });
 
-	private getLastImportStatementIndex(): number {
-		if (this.documentLines === undefined) {
-			return 0;
-		}
+        return this.flattenImportGroups(groups);
+    }
 
-		// reversing to find last item that matches
-		const reversedLastIndex = this.documentLines.reverse().findIndex(statement => this.isImportStatement(statement))!;
+    private groupImports(importStatements: string[]): ImportGroup[] {
+        let copiedImportStatements = importStatements.slice();
 
-		if (reversedLastIndex === -1) {
-			return 0;
-		}
+        const importGroups: ImportGroup[] = [];
 
-		// to get real index
-		return this.documentLines?.length - reversedLastIndex;
-	}
+        GROUP_PREF.forEach((preference) => {
+            const matchingStatements = copiedImportStatements.filter((statement) =>
+                preference.regex.test(this.strip(statement))
+            );
 
-	private getRawImports(): string[] {
-		return this.documentLines.filter(line => this.isImportStatement(line)).map((line) => line.trim());
-	}
+            importGroups.push({
+                groupRegex: preference.regex,
+                order: preference.order,
+                imports: matchingStatements,
+            });
 
-	private groupImports(importStatements: string[]): ImportGroup[] {
-		// TODO: implement
-		return [];
-	}
+            // remove matching statements so they don't match again with later regex
+            copiedImportStatements = copiedImportStatements.filter(
+                (statement) => !matchingStatements.includes(statement)
+            );
+        });
 
-	private sortAlphabetically(imports: string[]): void {
-		// TODO: implement
-	}
+        // if there are imports that don't match anything, throw them at the end
+        if (copiedImportStatements.length > 0) {
+            importGroups.push({
+                groupRegex: /.*/gm,
+                imports: copiedImportStatements,
+                order: Math.max(...importGroups.map((group) => group.order)) + 1,
+            });
+        }
 
-	private removePreviousImports(): Thenable<boolean> {
-		return this.textEditor.edit((editor) => {
-			this.documentLines.slice(this.getLastImportStatementIndex()).forEach((_line, index) => {
-				editor.delete(new vscode.Range(new vscode.Position(index, 0), new vscode.Position(index, Number.MAX_SAFE_INTEGER)));
-			});
-		});
-	}
+        return importGroups;
+    }
 
-	private insertSortedImports(importStatements: string[]) {
-		this.textEditor.edit((editor) => {
-			importStatements.sort().forEach((importStatement, index) => {
-				editor.replace(new vscode.Position(index, 0), importStatement);
-			});
-		});
-	}
+    strip(statement: string) {
+        return statement
+            .trim()
+            .replace(/'/g, '')
+            .replace(/;/g, '')
+            .replace('import ', '')
+            .replace(/ as .*/, '')
+            .trim();
+    }
 
-	private isImportStatement(value: string) {
-		// note: all these import statements probably have '\n' at the end, so use 'm' flag for multiline detection
-		return RegExp(/^import.*;$/, 'gm').test(value);
-	}
+    private flattenImportGroups(groups: ImportGroup[]): string {
+        groups = groups.sort((groupA, groupB) => groupA.order - groupB.order);
+
+        const concattedGroups = groups
+            .map((group) => {
+                return group.imports.join('\n');
+            })
+            .join('\n\n');
+
+        return concattedGroups;
+    }
+
+    private getRawImports(): string[] {
+        return this.document
+            .filter((line) => this.isImportStatement(line))
+            .map((line) => line.trim());
+    }
+
+    private sortAlphabetically(imports: string[]): string[] {
+        return imports.sort();
+    }
+
+    private isImportStatement(value: string) {
+        // note: all these import statements probably have '\n' at the end, so use 'm' flag for multiline detection
+        return RegExp(/^import.*;$/, 'gm').test(value);
+    }
 }
