@@ -23,6 +23,9 @@ Coming Soon!
 
     Initial release. Extension can group imports and sorts imports within each group alphabetically.
 
+## Contribution
+Contact me at aziznal.dev@gmail.com. I'd love to collaborate!
+
 ---
 
 ### Note

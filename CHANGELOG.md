@@ -4,6 +4,7 @@ All notable changes to the "dartimportsorter" extension will be documented in th
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [Unreleased]
+## [Unreleased] - 10th April (2022-04-10)
 
-- Initial release
+### Added:
+- basic grouping and sorting logic to extension
