@@ -15,7 +15,7 @@ const GROUP_PREF: GroupingPreference[] = [
         order: 10,
     },
     {
-        regex: /^package:[^gym_app].*$/m,
+        regex: /^package:(?!gym_app).*$/m,
         order: 100,
     },
     {
