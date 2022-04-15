@@ -1,13 +1,15 @@
 {
-  "name": "dartimportsorter",
-  "displayName": "DartImportSorter",
+  "name": "dart-import-sorter",
+  "publisher": "aziznal",
+  "repository": {"url": "https://github.com/aziznal/dart-import-sorter"},
+  "displayName": "Dart Import Sorter",
   "description": "Sorts and groups import statements in your dart files",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.65.0"
   },
   "categories": [
-    "Other"
+    "Formatters"
   ],
   "activationEvents": [
     "onCommand:dartimportsorter.sortImports"
