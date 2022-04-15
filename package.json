@@ -1,5 +1,6 @@
 {
   "name": "dart-import-sorter",
+  "publisher": "aziznal",
   "repository": {"url": "https://github.com/aziznal/dart-import-sorter"},
   "displayName": "Dart Import Sorter",
   "description": "Sorts and groups import statements in your dart files",
