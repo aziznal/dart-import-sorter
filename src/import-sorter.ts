@@ -1,9 +1,5 @@
+import { GroupingPreference } from './types/grouping-preference.model';
 import { ImportGroup } from './types/import-group';
-
-export type GroupingPreference = {
-    regex: RegExp;
-    order: number;
-};
 
 export class ImportSorter {
     document: string[];

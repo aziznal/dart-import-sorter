@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
 
-import { GroupingPreference, ImportSorter } from './import-sorter';
-import { VscodeDocumentLineReplacer } from './line-replacer';
+import { GroupingPreference, RawGroupingPreference } from './types/grouping-preference.model';
 
-type RawGroupingPreference = { label: string; regex: string; order: number; regexFlags: string[] };
+import { ImportSorter } from './import-sorter';
+import { VscodeDocumentLineReplacer } from './line-replacer';
 
 export function activate(context: vscode.ExtensionContext) {
     let disposable = vscode.commands.registerCommand('dartimportsorter.sortImports', () => {
