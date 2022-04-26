@@ -108,9 +108,14 @@ If you don't provide custom rules in settings.json, then the extension will use 
 
 ## Release Notes
 
--   ### 0.0.2
+-   ### 0.0.1
 
     Initial release. Extension can group imports and sorts imports within each group alphabetically.
+
+-   ### 0.0.2
+
+    Added ability to write custom sorting rules to group and order imports according to preference.
+
 
 ## Contribution
 

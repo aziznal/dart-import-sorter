@@ -6,7 +6,7 @@
     },
     "displayName": "Dart Import Sorter",
     "description": "Sorts and groups import statements in your dart files",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "engines": {
         "vscode": "^1.65.0"
     },
