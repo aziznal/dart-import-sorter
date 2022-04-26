@@ -83,13 +83,13 @@ The extension comes with the following default rules:
     },
     {
         "label": "Package imports that are NOT your app",
-        "regex": "^package:(?!gym_app).*$",
+        "regex": "^package:(?!your_app_name_here).*$",
         "order": 100,
         "regexFlags": ["m"]
     },
     {
         "label": "Package imports that ARE your app",
-        "regex": "^package:gym_app.*$",
+        "regex": "^package:your_app_name_here.*$",
         "order": 101,
         "regexFlags": ["m"]
     },
