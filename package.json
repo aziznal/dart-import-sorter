@@ -93,7 +93,7 @@
                         },
                         {
                             "label": "Relative",
-                            "regex": "^..*$",
+                            "regex": "^\\..*$",
                             "order": 1000,
                             "regexFlags": [
                                 "m"
