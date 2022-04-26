@@ -1,47 +1,128 @@
 {
-  "name": "dart-import-sorter",
-  "publisher": "aziznal",
-  "repository": {"url": "https://github.com/aziznal/dart-import-sorter"},
-  "displayName": "Dart Import Sorter",
-  "description": "Sorts and groups import statements in your dart files",
-  "version": "0.0.1",
-  "engines": {
-    "vscode": "^1.65.0"
-  },
-  "categories": [
-    "Formatters"
-  ],
-  "activationEvents": [
-    "onCommand:dartimportsorter.sortImports"
-  ],
-  "main": "./out/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "dartimportsorter.sortImports",
-        "title": "Dart: Sort Imports"
-      }
-    ]
-  },
-  "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
-  },
-  "devDependencies": {
-    "@types/glob": "^7.2.0",
-    "@types/mocha": "^9.1.0",
-    "@types/node": "14.x",
-    "@types/vscode": "^1.65.0",
-    "@typescript-eslint/eslint-plugin": "^5.16.0",
-    "@typescript-eslint/parser": "^5.16.0",
-    "@vscode/test-electron": "^2.1.3",
-    "eslint": "^8.11.0",
-    "glob": "^7.2.0",
-    "mocha": "^9.2.2",
-    "typescript": "^4.5.5"
-  }
+    "name": "dart-import-sorter",
+    "publisher": "aziznal",
+    "repository": {
+        "url": "https://github.com/aziznal/dart-import-sorter"
+    },
+    "displayName": "Dart Import Sorter",
+    "description": "Sorts and groups import statements in your dart files",
+    "version": "0.0.3",
+    "engines": {
+        "vscode": "^1.65.0"
+    },
+    "categories": [
+        "Formatters"
+    ],
+    "activationEvents": [
+        "onCommand:dartimportsorter.sortImports"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "dartimportsorter.sortImports",
+                "title": "Dart: Sort Imports"
+            }
+        ],
+        "configuration": {
+            "title": "Dart Import Sorter",
+            "description": "Change how and when import sorting works",
+            "order": 0,
+            "properties": {
+                "dartimportsorter.matchingRules": {
+                    "type": "array",
+                    "description": "Custom rules that define how import grouping will work as well as in what order the groups will appear",
+                    "items": {
+                        "type": "object",
+                        "title": "matching rule",
+                        "properties": {
+                            "label": {
+                                "type": "string",
+                                "description": "The label of your sorting rule"
+                            },
+                            "regex": {
+                                "type": "string",
+                                "description": "The regex to match your imports against"
+                            },
+                            "regexFlags": {
+                                "type": "array",
+                                "description": "List of flags your regex has",
+                                "items": {
+                                    "type": "string",
+                                    "title": "regex flags"
+                                }
+                            },
+                            "order": {
+                                "type": "number",
+                                "description": "The order in which the group matching this rule will appear compared to other groups"
+                            }
+                        }
+                    },
+                    "default": [
+                        {
+                            "label": "Dart",
+                            "regex": "^dart:.*$",
+                            "order": 1,
+                            "regexFlags": [
+                                "m"
+                            ]
+                        },
+                        {
+                            "label": "Flutter",
+                            "regex": "^package:flutter.*$",
+                            "order": 10,
+                            "regexFlags": [
+                                "m"
+                            ]
+                        },
+                        {
+                            "label": "Package imports that are NOT your app",
+                            "regex": "^package:(?!your_app_name_here).*$",
+                            "order": 100,
+                            "regexFlags": [
+                                "m"
+                            ]
+                        },
+                        {
+                            "label": "Package imports that ARE your app",
+                            "regex": "^package:your_app_name_here.*$",
+                            "order": 101,
+                            "regexFlags": [
+                                "m"
+                            ]
+                        },
+                        {
+                            "label": "Relative",
+                            "regex": "^\\..*$",
+                            "order": 1000,
+                            "regexFlags": [
+                                "m"
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile && npm run lint",
+        "lint": "eslint src --ext ts",
+        "test": "node ./out/test/runTest.js"
+    },
+    "devDependencies": {
+        "@types/glob": "^7.2.0",
+        "@types/mocha": "^9.1.0",
+        "@types/node": "14.x",
+        "@types/vscode": "^1.65.0",
+        "@typescript-eslint/eslint-plugin": "^5.16.0",
+        "@typescript-eslint/parser": "^5.16.0",
+        "@vscode/test-electron": "^2.1.3",
+        "eslint": "^8.11.0",
+        "glob": "^7.2.0",
+        "mocha": "^9.2.2",
+        "typescript": "^4.5.5"
+    }
 }

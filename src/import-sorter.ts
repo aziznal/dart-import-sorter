@@ -1,39 +1,13 @@
+import { GroupingPreference } from './types/grouping-preference.model';
 import { ImportGroup } from './types/import-group';
-
-type GroupingPreference = {
-    regex: RegExp;
-    order: number;
-};
-
-const GROUP_PREF: GroupingPreference[] = [
-    {
-        regex: /^dart:.*$/m,
-        order: 1,
-    },
-    {
-        regex: /^package:flutter.*$/m,
-        order: 10,
-    },
-    {
-        regex: /^package:(?!gym_app).*$/m,
-        order: 100,
-    },
-    {
-        regex: /^package:gym_app.*$/m,
-        order: 101,
-    },
-    // relative imports (./ or ../)
-    {
-        regex: /^\..*$/m,
-        order: 1000,
-    },
-];
 
 export class ImportSorter {
     document: string[];
+    private sortingRules: GroupingPreference[];
 
-    constructor(document: string[]) {
+    constructor(document: string[], sortingRules: GroupingPreference[]) {
         this.document = document;
+        this.sortingRules = sortingRules;
     }
 
     get firstImportIndex(): number {
@@ -76,7 +50,7 @@ export class ImportSorter {
 
         const importGroups: ImportGroup[] = [];
 
-        GROUP_PREF.forEach((preference) => {
+        this.sortingRules.forEach((preference) => {
             const matchingStatements = copiedImportStatements.filter((statement) =>
                 preference.regex.test(this.strip(statement))
             );
