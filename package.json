@@ -26,10 +26,12 @@
         ],
         "configuration": {
             "title": "Dart Import Sorter",
+            "description": "Change how and when import sorting works",
             "order": 0,
             "properties": {
                 "dartimportsorter.matchingRules": {
                     "type": "array",
+                    "description": "Custom rules that define how import grouping will work as well as in what order the groups will appear",
                     "items": {
                         "type": "object",
                         "title": "matching rule",
