@@ -1,5 +1,10 @@
 # Dart Import Sorter
 
+[![GitHub license](https://img.shields.io/github/license/aziznal/dart-import-sorter)](https://github.com/aziznal/dart-import-sorter/blob/main/LICENSE)
+[![GitHub release](https://img.shields.io/github/release/aziznal/dart-import-sorter)](https://GitHub.com/aziznal/dart-import-sorter/releases/)
+[![Visual Studio Marketplace](https://vsmarketplacebadge.apphb.com/installs-short/aziznal.dart-import-sorter.svg?style=flat)](https://marketplace.visualstudio.com/items?itemName=aziznal.dart-import-sorter)
+[![Visual Studio Marketplace](https://vsmarketplacebadge.apphb.com/version/aziznal.dart-import-sorter.svg)](https://marketplace.visualstudio.com/items?itemName=aziznal.dart-import-sorter)
+
 This is a Vscode extension that sorts your dart / flutter imports with a single command!
 
 ## Usage
@@ -115,7 +120,6 @@ If you don't provide custom rules in settings.json, then the extension will use 
 -   ### 0.0.2
 
     Added ability to write custom sorting rules to group and order imports according to preference.
-
 
 ## Contribution
 
