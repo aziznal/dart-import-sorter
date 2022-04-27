@@ -9,10 +9,12 @@ This is a Vscode extension that sorts your dart / flutter imports with a single 
 
 ## Usage
 
+Using the shortcut: `ctrl+alt+o`
+
+Using the command palette:
+
 1. Open the command palette (Ctrl + Shift + P)
 2. Type and Run `Dart: Sort Imports`
-
-A configurable keyboard shortcut as well sort-on-save features will be added in the future
 
 ## Features
 

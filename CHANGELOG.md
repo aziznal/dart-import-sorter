@@ -6,11 +6,17 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.0.4] - 27th April (2022-04-27)
+
+### Added:
+
+-   Ability to run extension using shortcut `Ctrl + Alt + O`
+
 ## [0.0.3] - 27th April (2022-04-27)
 
 ### Changed:
 
-- Default sorting rules no longer contain 'gym_app' as default app name
+-   Default sorting rules no longer contain 'gym_app' as default app name
 
 ## [0.0.2] - 27th April (2022-04-27)
 
