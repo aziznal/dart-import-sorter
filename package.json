@@ -4,9 +4,10 @@
     "repository": {
         "url": "https://github.com/aziznal/dart-import-sorter"
     },
+    "icon": "icon.png",
     "displayName": "Dart Import Sorter",
     "description": "Sorts and groups import statements in your dart files",
-    "version": "0.1.1",
+    "version": "0.2.0",
     "engines": {
         "vscode": "^1.65.0"
     },

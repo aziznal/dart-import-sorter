@@ -6,6 +6,18 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.2.0] - 5th May (2022-05-05)
+
+### Added
+
+-   Icon for extension in marketplace
+
+## [0.1.1] - 5th May (2022-05-05)
+
+### Added:
+
+-   Updated information to readme and package.json
+
 ## [0.1.0] - 4th May (2022-05-04)
 
 ### Added:
