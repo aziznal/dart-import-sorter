@@ -13,13 +13,14 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
         const currentExtensionConfig = vscode.workspace.getConfiguration('dartimportsorter');
+        const currentDocument = vscode.window.activeTextEditor?.document!;
 
-        sortImports(currentExtensionConfig);
+        sortImports(currentDocument, currentExtensionConfig);
     });
 
     context.subscriptions.push(disposable);
 
-    const sortOnSave = vscode.workspace.onWillSaveTextDocument(() => {
+    const sortOnSave = vscode.workspace.onWillSaveTextDocument((event) => {
         if (!isDartFilename(vscode.window.activeTextEditor?.document.fileName)) {
             return;
         }
@@ -28,15 +29,15 @@ export function activate(context: vscode.ExtensionContext) {
         const currentExtensionConfig = vscode.workspace.getConfiguration('dartimportsorter');
 
         if (currentExtensionConfig.get('sortOnSave')) {
-            sortImports(currentExtensionConfig);
+            sortImports(event.document, currentExtensionConfig);
         }
     });
 
     context.subscriptions.push(sortOnSave);
 }
 
-function sortImports(config: vscode.WorkspaceConfiguration) {
-    const documentLines = vscode.window.activeTextEditor?.document
+function sortImports(document: vscode.TextDocument, config: vscode.WorkspaceConfiguration) {
+    const documentLines = document
         .getText()
         .split('\n')
         .map((statement) => statement.replace(/(\r\n|\n|\r)/gm, ''));
