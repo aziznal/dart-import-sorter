@@ -14,6 +14,7 @@
         "Formatters"
     ],
     "activationEvents": [
+        "onLanguage:dart",
         "onCommand:dartimportsorter.sortImports"
     ],
     "main": "./out/extension.js",
@@ -139,6 +140,16 @@
                     ],
                     "type": "boolean",
                     "default": true
+                },
+                "dartimportsorter.sortOnSave": {
+                    "markdownDescription": "If set to `true`, then your imports will be sorted when you save your document",
+                    "examples": [
+                        {
+                            "dartimportsorter.sortOnSave": true
+                        }
+                    ],
+                    "type": "boolean",
+                    "default": false
                 }
             }
         }
