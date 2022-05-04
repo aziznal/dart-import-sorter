@@ -6,6 +6,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+### Fixed:
+
+-   Fixed bug where random new lines would be added before or after an import
+
 ## [0.0.4] - 27th April (2022-04-27)
 
 ### Added:
