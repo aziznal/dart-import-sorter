@@ -109,6 +109,7 @@
                     ]
                 },
                 "dartimportsorter.leaveEmptyLinesBetweenGroups": {
+                    "markdownDescription": "Set to `true` to leave a single empty line between each group of imports. Set to `false` to make all import groups resemble a single block.",
                     "type": "boolean",
                     "default": true
                 }
