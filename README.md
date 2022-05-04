@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-This is a Vscode extension that sorts your dart / flutter imports with a single command!
+This is a VS Code extension that sorts your dart / flutter imports with a single command.
 </p>
 
 <p align="center">
