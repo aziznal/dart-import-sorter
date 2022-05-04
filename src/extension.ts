@@ -7,6 +7,11 @@ import { VscodeDocumentLineReplacer } from './line-replacer';
 
 export function activate(context: vscode.ExtensionContext) {
     let disposable = vscode.commands.registerCommand('dartimportsorter.sortImports', () => {
+        if (!isDartFilename(vscode.window.activeTextEditor?.document.fileName)) {
+            vscode.window.showWarningMessage('dartimportsorter only works on .dart files.');
+            return;
+        }
+
         const documentLines = vscode.window.activeTextEditor?.document
             .getText()
             .split('\n')
@@ -38,6 +43,14 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     context.subscriptions.push(disposable);
+}
+
+function isDartFilename(filename?: string): boolean {
+    if (!filename) {
+        return false;
+    }
+
+    return filename.slice(-5) === '.dart';
 }
 
 function parseSortingRules(rawSortingRules: RawGroupingPreference[]): GroupingPreference[] {
