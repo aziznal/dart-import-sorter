@@ -1,11 +1,18 @@
-# Dart Import Sorter
+<p align="center">
+   <img src="icon.png" width="300px" style="margin: auto">
+</p>
 
-[![GitHub license](https://img.shields.io/github/license/aziznal/dart-import-sorter)](https://github.com/aziznal/dart-import-sorter/blob/main/LICENSE)
-[![GitHub release](https://img.shields.io/github/release/aziznal/dart-import-sorter)](https://GitHub.com/aziznal/dart-import-sorter/releases/)
-[![Visual Studio Marketplace](https://vsmarketplacebadge.apphb.com/installs-short/aziznal.dart-import-sorter.svg?style=flat)](https://marketplace.visualstudio.com/items?itemName=aziznal.dart-import-sorter)
-[![Visual Studio Marketplace](https://vsmarketplacebadge.apphb.com/version/aziznal.dart-import-sorter.svg)](https://marketplace.visualstudio.com/items?itemName=aziznal.dart-import-sorter)
-
+<p align="center">
 This is a Vscode extension that sorts your dart / flutter imports with a single command!
+</p>
+
+<p align="center">
+    <a href="https://github.com/aziznal/dart-import-sorter/blob/main/LICENSE"><img src="https://img.shields.io/github/license/aziznal/dart-import-sorter" alt="Licence"></a>
+    <a href="https://GitHub.com/aziznal/dart-import-sorter/releases/"><img src="https://img.shields.io/github/release/aziznal/dart-import-sorter" alt="Release"></a>
+    <a href="https://marketplace.visualstudio.com/items?itemName=aziznal.dart-import-sorter"><img src="https://vsmarketplacebadge.apphb.com/installs-short/aziznal.dart-import-sorter.svg?style=flat" alt="Visual Studio Marketplace Installs"></a>
+    <a href="https://marketplace.visualstudio.com/items?itemName=aziznal.dart-import-sorter"><img src="https://vsmarketplacebadge.apphb.com/version/aziznal.dart-import-sorter.svg" alt="Visual Studio Marketplace"></a>
+
+</p>
 
 ## Usage
 
