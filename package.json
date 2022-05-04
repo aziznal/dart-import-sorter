@@ -107,6 +107,10 @@
                             ]
                         }
                     ]
+                },
+                "dartimportsorter.leaveEmptyLinesBetweenGroups": {
+                    "type": "boolean",
+                    "default": true
                 }
             }
         }

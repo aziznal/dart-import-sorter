@@ -24,11 +24,14 @@ export function activate(context: vscode.ExtensionContext) {
 
         // Load sorting rules
         const config = vscode.workspace.getConfiguration('dartimportsorter');
+
         const rawSortingRules = config.get('matchingRules') as RawGroupingPreference[];
+        const leaveEmptyLinesBetweenImports = config.get('leaveEmptyLinesBetweenGroups') as boolean;
+
         const sortingRules = parseSortingRules(rawSortingRules);
 
         // Sort dem imports
-        const importSorter = new ImportSorter(documentLines, sortingRules);
+        const importSorter = new ImportSorter(documentLines, sortingRules, { leaveEmptyLinesBetweenImports: leaveEmptyLinesBetweenImports });
         const sortedImports = importSorter.sortImports();
 
         // Replace unsorted imports with the sorted ones

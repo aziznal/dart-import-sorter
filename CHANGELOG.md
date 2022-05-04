@@ -6,6 +6,11 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+### Added:
+
+-   Ability to toggle leaving empty lines between groups on or off
+-   Condition to make sure extension is only ran on files ending with `.dart`
+
 ### Fixed:
 
 -   Fixed bug where random new lines would be added before or after an import

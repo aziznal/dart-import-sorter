@@ -1,14 +1,20 @@
 import { GroupingPreference } from './types/grouping-preference.model';
 import { ImportGroup } from './types/import-group';
 
-export class ImportSorter {
-    document: string[];
-    private sortingRules: GroupingPreference[];
+type ImportSorterConfig = {
+    leaveEmptyLinesBetweenImports: boolean;
+};
 
-    constructor(document: string[], sortingRules: GroupingPreference[]) {
-        this.document = document;
-        this.sortingRules = sortingRules;
-    }
+const defaultConfig: ImportSorterConfig = {
+    leaveEmptyLinesBetweenImports: true,
+};
+
+export class ImportSorter {
+    constructor(
+        private document: string[],
+        private sortingRules: GroupingPreference[],
+        private config: ImportSorterConfig
+    ) {}
 
     get firstImportIndex(): number {
         return this.document.findIndex((statement) => this.isImportStatement(statement));
@@ -109,7 +115,7 @@ export class ImportSorter {
             .map((group) => {
                 return group.imports.join('\n');
             })
-            .join('\n\n');
+            .join(this.config.leaveEmptyLinesBetweenImports ? '\n\n' : '\n');
 
         return concattedGroups;
     }
