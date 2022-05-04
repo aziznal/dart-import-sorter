@@ -6,7 +6,7 @@
     },
     "displayName": "Dart Import Sorter",
     "description": "Sorts and groups import statements in your dart files",
-    "version": "0.0.4",
+    "version": "0.1.0",
     "engines": {
         "vscode": "^1.65.0"
     },
@@ -14,6 +14,7 @@
         "Formatters"
     ],
     "activationEvents": [
+        "onLanguage:dart",
         "onCommand:dartimportsorter.sortImports"
     ],
     "main": "./out/extension.js",
@@ -38,7 +39,7 @@
             "properties": {
                 "dartimportsorter.matchingRules": {
                     "type": "array",
-                    "description": "Custom rules that define how import grouping will work as well as in what order the groups will appear",
+                    "markdownDescription": "Custom rules that define how import grouping will work as well as in what order the groups will appear.",
                     "items": {
                         "type": "object",
                         "title": "matching rule",
@@ -106,7 +107,49 @@
                                 "m"
                             ]
                         }
+                    ],
+                    "examples": [
+                        {
+                            "dartimportsorter.matchingRules": [
+                                {
+                                    "label": "Dart",
+                                    "regex": "^dart:.*$",
+                                    "order": 1,
+                                    "regexFlags": [
+                                        "m"
+                                    ]
+                                },
+                                {
+                                    "label": "Flutter",
+                                    "regex": "^package:flutter:.*$",
+                                    "order": 10,
+                                    "regexFlags": [
+                                        "m"
+                                    ]
+                                }
+                            ]
+                        }
                     ]
+                },
+                "dartimportsorter.leaveEmptyLinesBetweenGroups": {
+                    "markdownDescription": "Set to `true` to leave a single empty line between each group of imports. Set to `false` to make all import groups resemble a single block.",
+                    "examples": [
+                        {
+                            "dartimportsorter.leaveEmptyLinesBetweenGroups": true
+                        }
+                    ],
+                    "type": "boolean",
+                    "default": true
+                },
+                "dartimportsorter.sortOnSave": {
+                    "markdownDescription": "If set to `true`, then your imports will be sorted when you save your document",
+                    "examples": [
+                        {
+                            "dartimportsorter.sortOnSave": true
+                        }
+                    ],
+                    "type": "boolean",
+                    "default": false
                 }
             }
         }

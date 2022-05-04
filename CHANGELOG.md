@@ -6,6 +6,18 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.1.0] - 4th May (2022-05-04)
+
+### Added:
+
+-   Ability to toggle leaving empty lines between groups on or off
+-   Condition to make sure extension is only ran on files ending with `.dart`
+-   `sortOnSave` option
+
+### Fixed:
+
+-   Fixed bug where random new lines would be added before or after an import
+
 ## [0.0.4] - 27th April (2022-04-27)
 
 ### Added:

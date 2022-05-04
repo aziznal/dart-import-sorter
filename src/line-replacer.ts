@@ -11,6 +11,10 @@ export class VscodeDocumentLineReplacer {
 
     // REFACTOR
     replace({ range, withLines }: { range: Range; withLines: string[] }) {
+        if (withLines.length === 0 || range.end === -1 || range.start === -1) {
+            return; // nothing to sort
+        }
+
         const lineRange = new vscode.Range(
             new vscode.Position(range.start, 0),
             new vscode.Position(range.end, 0)

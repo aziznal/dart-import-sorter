@@ -1,18 +1,23 @@
 import { GroupingPreference } from './types/grouping-preference.model';
 import { ImportGroup } from './types/import-group';
 
-export class ImportSorter {
-    document: string[];
-    private sortingRules: GroupingPreference[];
+type ImportSorterConfig = {
+    leaveEmptyLinesBetweenImports: boolean;
+};
 
-    constructor(document: string[], sortingRules: GroupingPreference[]) {
-        this.document = document;
-        this.sortingRules = sortingRules;
-    }
+const defaultConfig: ImportSorterConfig = {
+    leaveEmptyLinesBetweenImports: true,
+};
+
+export class ImportSorter {
+    constructor(
+        private document: string[],
+        private sortingRules: GroupingPreference[],
+        private config: ImportSorterConfig
+    ) {}
 
     get firstImportIndex(): number {
-        // TODO: Implement
-        return 0;
+        return this.document.findIndex((statement) => this.isImportStatement(statement));
     }
 
     get lastImportIndex(): number {
@@ -36,13 +41,23 @@ export class ImportSorter {
     sortImports(): string {
         const rawImports = this.getRawImports();
 
+        if (rawImports.length === 0) {
+            return ''; // nothing to sort
+        }
+
         const groups = this.groupImports(rawImports);
 
         groups.forEach((group) => {
             group.imports = this.sortAlphabetically(group.imports);
         });
 
-        return this.flattenImportGroups(groups);
+        const nonEmptyGroups = this.removeEmptyGroups(groups);
+
+        if (nonEmptyGroups.length === 0) {
+            return ''; // nothing to sort
+        }
+
+        return this.flattenImportGroups(nonEmptyGroups);
     }
 
     private groupImports(importStatements: string[]): ImportGroup[] {
@@ -79,7 +94,7 @@ export class ImportSorter {
         return importGroups;
     }
 
-    strip(statement: string) {
+    private strip(statement: string) {
         return statement
             .trim()
             .replace(/'/g, '')
@@ -89,6 +104,10 @@ export class ImportSorter {
             .trim();
     }
 
+    private removeEmptyGroups(groups: ImportGroup[]): ImportGroup[] {
+        return groups.filter((group) => group.imports.length > 0);
+    }
+
     private flattenImportGroups(groups: ImportGroup[]): string {
         groups = groups.sort((groupA, groupB) => groupA.order - groupB.order);
 
@@ -96,7 +115,7 @@ export class ImportSorter {
             .map((group) => {
                 return group.imports.join('\n');
             })
-            .join('\n\n');
+            .join(this.config.leaveEmptyLinesBetweenImports ? '\n\n' : '\n');
 
         return concattedGroups;
     }
