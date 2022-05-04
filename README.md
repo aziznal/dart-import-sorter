@@ -9,18 +9,27 @@ This is a Vscode extension that sorts your dart / flutter imports with a single 
 
 ## Usage
 
-Using the shortcut: `ctrl+alt+o`
+There are three ways to activate the extension:
 
-Using the command palette:
+1. Using the shortcut: `ctrl+alt+o`
 
-1. Open the command palette (Ctrl + Shift + P)
-2. Type and Run `Dart: Sort Imports`
+2. Using the command palette:
+
+    1. Open the command palette (Ctrl + Shift + P)
+    2. Type and Run `Dart: Sort Imports`
+
+3. Save your active document (with `sortOnSave` set to `true`).
 
 ## Features
 
-This extension will group your dart imports according to source and package:namespace.
+By default, this extension will group your dart imports according to source and `package:<namespace>`.
 
 ![Demo](demo/dart-import-sorter-demo.gif)
+
+### Sort On Save
+
+You can set the extension to sort your dart imports whenever you save your
+current active document. **This is set to `false` by default**, but can be changed in the extension settings.
 
 ### Custom Sorting Rules
 
@@ -111,9 +120,18 @@ The extension comes with the following default rules:
 
 If you don't provide custom rules in settings.json, then the extension will use these rules by default. If you provide any configuration whatsoever, then the extension will use only your configuration, completely disregarding the defaults.
 
+### Other Settings
+
+```jsonc
+{
+    "dartimportsorter.leaveEmptyLinesBetweenGroups": true
+}
+```
+
 ---
 
 ## Release Notes
+
 See [Changelog](./CHANGELOG.md)
 
 ## Contribution
