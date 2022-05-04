@@ -6,6 +6,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.1.0] - 4th May (2022-05-04)
+
 ### Added:
 
 -   Ability to toggle leaving empty lines between groups on or off
