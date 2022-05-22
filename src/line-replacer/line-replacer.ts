@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-import { Range } from './types/range';
+import { Range } from '../types/range';
 
 export class VscodeDocumentLineReplacer {
     textEditor!: vscode.TextEditor;
@@ -10,7 +10,7 @@ export class VscodeDocumentLineReplacer {
     }
 
     // REFACTOR
-    replace({ range, withLines }: { range: Range; withLines: string[] }) {
+    replace({ range, withLines }: { range: Range; withLines: string }) {
         if (withLines.length === 0 || range.end === -1 || range.start === -1) {
             return; // nothing to sort
         }
@@ -20,10 +20,8 @@ export class VscodeDocumentLineReplacer {
             new vscode.Position(range.end, 0)
         );
 
-        const formattedLines = withLines.concat('').join('\n');
-
         this.textEditor.edit((editor) => {
-            editor.replace(lineRange, formattedLines);
+            editor.replace(lineRange, withLines + '\n');
         });
     }
 

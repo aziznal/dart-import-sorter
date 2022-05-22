@@ -1,5 +1,5 @@
-import { GroupingPreference } from './types/grouping-preference.model';
-import { ImportGroup } from './types/import-group';
+import { GroupingPreference } from '../types/grouping-preference.model';
+import { ImportGroup } from '../types/import-group';
 
 type ImportSorterConfig = {
     leaveEmptyLinesBetweenImports: boolean;
