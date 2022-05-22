@@ -1,32 +1,27 @@
-import { GroupingPreference } from '../types/grouping-preference.model';
+import { IImportSorter } from './import-sorter.interface';
+
+import { ExtensionSettings } from '../extension-settings/extension-settings.impl';
 import { ImportGroup } from '../types/import-group';
 
-type ImportSorterConfig = {
-    leaveEmptyLinesBetweenImports: boolean;
-};
+/**
+ * Sorts imports using a basic grouping algorithm.
+ */
+export class ImportSorter implements IImportSorter {
+    settings = new ExtensionSettings();
 
-const defaultConfig: ImportSorterConfig = {
-    leaveEmptyLinesBetweenImports: true,
-};
+    constructor(public rawImports: string[]) {}
 
-export class ImportSorter {
-    constructor(
-        private document: string[],
-        private sortingRules: GroupingPreference[],
-        private config: ImportSorterConfig
-    ) {}
-
-    get firstImportIndex(): number {
-        return this.document.findIndex((statement) => this.isImportStatement(statement));
+    get firstRawImportIndex(): number {
+        return this.rawImports.findIndex((statement) => this.isImportStatement(statement));
     }
 
-    get lastImportIndex(): number {
-        if (this.document === undefined) {
+    get lastRawImportIndex(): number {
+        if (this.rawImports === undefined) {
             return 0;
         }
 
         // reversing to find last item that matches
-        const reversedLastIndex = this.document
+        const reversedLastIndex = this.rawImports
             .reverse()
             .findIndex((statement) => this.isImportStatement(statement))!;
 
@@ -35,7 +30,7 @@ export class ImportSorter {
         }
 
         // to get real index
-        return this.document?.length - reversedLastIndex;
+        return this.rawImports?.length - reversedLastIndex;
     }
 
     sortImports(): string {
@@ -65,7 +60,7 @@ export class ImportSorter {
 
         const importGroups: ImportGroup[] = [];
 
-        this.sortingRules.forEach((preference) => {
+        this.settings.sortingRules.forEach((preference) => {
             const matchingStatements = copiedImportStatements.filter((statement) =>
                 preference.regex.test(this.strip(statement))
             );
@@ -115,13 +110,13 @@ export class ImportSorter {
             .map((group) => {
                 return group.imports.join('\n');
             })
-            .join(this.config.leaveEmptyLinesBetweenImports ? '\n\n' : '\n');
+            .join(this.settings.leaveEmptyLinesBetweenImports ? '\n\n' : '\n');
 
         return concattedGroups;
     }
 
     private getRawImports(): string[] {
-        return this.document
+        return this.rawImports
             .filter((line) => this.isImportStatement(line))
             .map((line) => line.trim());
     }

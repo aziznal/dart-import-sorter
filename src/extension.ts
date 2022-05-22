@@ -1,8 +1,7 @@
 import * as vscode from 'vscode';
 
-import { GroupingPreference, RawGroupingPreference } from './types/grouping-preference.model';
-
-import { ImportSorter } from './import-sorter/import-sorter';
+import { ExtensionSettings } from './extension-settings/extension-settings.impl';
+import { ImportSorter } from './import-sorter/import-sorter.impl';
 import { VscodeDocumentLineReplacer } from './line-replacer/line-replacer';
 import { Range } from './types/range';
 import { Utils } from './utils';
@@ -23,10 +22,7 @@ function registerSortImportsCommand() {
             return;
         }
 
-        const currentExtensionConfig = vscode.workspace.getConfiguration('dartimportsorter');
-        const currentDocument = vscode.window.activeTextEditor?.document!;
-
-        sortAndReplaceImports(currentDocument, currentExtensionConfig);
+        sortAndReplaceImports();
     });
 }
 
@@ -37,11 +33,8 @@ function registerSortOnSaveAction() {
             return;
         }
 
-        // getting config again because it may have changed
-        const currentExtensionConfig = vscode.workspace.getConfiguration('dartimportsorter');
-
-        if (currentExtensionConfig.get('sortOnSave')) {
-            sortAndReplaceImports(event.document, currentExtensionConfig);
+        if (new ExtensionSettings().sortOnSaveEnabled) {
+            sortAndReplaceImports(event.document);
         }
     });
 }
@@ -50,36 +43,27 @@ function currentActiveFilename() {
     return vscode.window.activeTextEditor?.document.fileName;
 }
 
-function sortAndReplaceImports(
-    document: vscode.TextDocument,
-    config: vscode.WorkspaceConfiguration
-) {
-    const { sortedImports, range } = sortImports(document, config);
+function sortAndReplaceImports(document?: vscode.TextDocument) {
+    if (document === null || document === undefined) {
+        document = vscode.window.activeTextEditor?.document!;
+    }
+
+    const { sortedImports, range } = sortImports(document);
 
     replaceWithSortedImports(sortedImports, range);
 }
 
-function sortImports(
-    document: vscode.TextDocument,
-    config: vscode.WorkspaceConfiguration
-): { sortedImports: string; range: Range } {
-    const documentLines = getLinesOfActiveDocument(document);
-
-    const rawSortingRules = config.get('matchingRules') as RawGroupingPreference[];
-    const sortingRules = Utils.parseSortingRules(rawSortingRules);
-
-    const leaveEmptyLinesBetweenImports = config.get('leaveEmptyLinesBetweenGroups') as boolean;
+function sortImports(document: vscode.TextDocument): { sortedImports: string; range: Range } {
+    const documentLines = Utils.splitIntoStringArray(document.getText());
 
     // Sort dem imports
-    const importSorter = new ImportSorter(documentLines, sortingRules, {
-        leaveEmptyLinesBetweenImports: leaveEmptyLinesBetweenImports,
-    });
+    const importSorter = new ImportSorter(documentLines);
 
     const sortedImports = importSorter.sortImports();
 
     return {
         sortedImports: sortedImports,
-        range: { start: importSorter.firstImportIndex, end: importSorter.lastImportIndex },
+        range: { start: importSorter.firstRawImportIndex, end: importSorter.lastRawImportIndex },
     };
 }
 
@@ -91,18 +75,4 @@ function replaceWithSortedImports(sortedImports: string, range: Range) {
         range: range,
         withLines: sortedImports,
     });
-}
-
-function getLinesOfActiveDocument(document: vscode.TextDocument): string[] {
-    const lines = document
-        .getText()
-        .split('\n')
-        .map((statement) => statement.replace(/(\r\n|\n|\r)/gm, ''));
-
-    if (lines === null || lines === undefined) {
-        vscode.window.showErrorMessage('Could not read document lines.');
-        throw new Error('Undefined documentLines in top level method');
-    }
-
-    return lines;
 }

@@ -1,3 +1,4 @@
+import { CouldNotReadDocumentError } from './errors/could-not-read-document.error';
 import { GroupingPreference, RawGroupingPreference } from './types/grouping-preference.model';
 
 export class Utils {
@@ -9,14 +10,15 @@ export class Utils {
         return filename.slice(-5) === '.dart';
     }
 
-    static parseSortingRules(rawSortingRules: RawGroupingPreference[]): GroupingPreference[] {
-        const formattedRules = rawSortingRules.map((rule) => {
-            return {
-                order: rule.order,
-                regex: RegExp(rule.regex, rule.regexFlags.join('')),
-            };
-        });
+    static splitIntoStringArray(bodyOfText: string): string[] {
+        const lines = bodyOfText
+            .split('\n')
+            .map((statement) => statement.replace(/(\r\n|\n|\r)/gm, ''));
 
-        return formattedRules;
+        if (lines === null || lines === undefined) {
+            throw new CouldNotReadDocumentError('Undefined documentLines in top level method');
+        }
+
+        return lines;
     }
 }
