@@ -1,7 +1,8 @@
-import { IImportSorter } from './import-sorter.interface';
+import { IImportSorter, SortingResult } from './import-sorter.interface';
 
 import { ExtensionSettings } from '../extension-settings/extension-settings.impl';
 import { ImportGroup } from '../types/import-group';
+import { Utils } from '../utils';
 
 /**
  * Sorts imports using a basic grouping algorithm.
@@ -9,38 +10,14 @@ import { ImportGroup } from '../types/import-group';
 export class ImportSorter implements IImportSorter {
     settings = new ExtensionSettings();
 
-    constructor(public rawImports: string[]) {}
+    sortImports(rawDocumentBody: string): SortingResult {
+        const formattedImports = this.getFormattedImports(rawDocumentBody);
 
-    get firstRawImportIndex(): number {
-        return this.rawImports.findIndex((statement) => this.isImportStatement(statement));
-    }
-
-    get lastRawImportIndex(): number {
-        if (this.rawImports === undefined) {
-            return 0;
+        if (formattedImports.length === 0) {
+            return { sortedImports: '', firstRawImportIndex: -1, lastRawImportIndex: -1 }; // nothing to sort
         }
 
-        // reversing to find last item that matches
-        const reversedLastIndex = this.rawImports
-            .reverse()
-            .findIndex((statement) => this.isImportStatement(statement))!;
-
-        if (reversedLastIndex === -1) {
-            return 0;
-        }
-
-        // to get real index
-        return this.rawImports?.length - reversedLastIndex;
-    }
-
-    sortImports(): string {
-        const rawImports = this.getRawImports();
-
-        if (rawImports.length === 0) {
-            return ''; // nothing to sort
-        }
-
-        const groups = this.groupImports(rawImports);
+        const groups = this.groupImports(formattedImports);
 
         groups.forEach((group) => {
             group.imports = this.sortAlphabetically(group.imports);
@@ -49,10 +26,14 @@ export class ImportSorter implements IImportSorter {
         const nonEmptyGroups = this.removeEmptyGroups(groups);
 
         if (nonEmptyGroups.length === 0) {
-            return ''; // nothing to sort
+            return { sortedImports: '', firstRawImportIndex: -1, lastRawImportIndex: -1 }; // nothing to sort
         }
 
-        return this.flattenImportGroups(nonEmptyGroups);
+        return {
+            sortedImports: this.flattenImportGroups(nonEmptyGroups),
+            firstRawImportIndex: this.indexOfFirstRawImport(rawDocumentBody.split('\n')),
+            lastRawImportIndex: this.indexOfLastRawImport(rawDocumentBody.split('\n')),
+        };
     }
 
     private groupImports(importStatements: string[]): ImportGroup[] {
@@ -115,14 +96,32 @@ export class ImportSorter implements IImportSorter {
         return concattedGroups;
     }
 
-    private getRawImports(): string[] {
-        return this.rawImports
+    private getFormattedImports(rawDocumentBody: string) {
+        return Utils.splitIntoStringArray(rawDocumentBody)
             .filter((line) => this.isImportStatement(line))
             .map((line) => line.trim());
     }
 
     private sortAlphabetically(imports: string[]): string[] {
         return imports.sort();
+    }
+
+    private indexOfFirstRawImport(rawImports: string[]): number {
+        return rawImports.findIndex((statement) => this.isImportStatement(statement));
+    }
+
+    private indexOfLastRawImport(rawDocumentLines: string[]): number {
+        // reversing to find last item that matches
+        const reversedLastIndex = rawDocumentLines
+            .reverse()
+            .findIndex((statement) => this.isImportStatement(statement))!;
+
+        if (reversedLastIndex === -1) {
+            return 0;
+        }
+
+        // to get real index
+        return rawDocumentLines.length - reversedLastIndex;
     }
 
     private isImportStatement(value: string) {

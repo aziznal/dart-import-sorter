@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
 
+import { IExtensionSettings } from './extension-settings/extension-settings.interface';
+
 import { ExtensionSettings } from './extension-settings/extension-settings.impl';
 import { FileInteractor } from './file-interactor/file-interactor.impl';
 import { ImportSorter } from './import-sorter/import-sorter.impl';
@@ -7,10 +9,12 @@ import { Range } from './types/range';
 import { Utils } from './utils';
 
 export class App {
+    settings: IExtensionSettings = new ExtensionSettings();
+
     /** Sets vscode to listen to the activation of the main command and sorts imports when it is activated */
     registerSortImportsCommand() {
         return vscode.commands.registerCommand('dartimportsorter.sortImports', () => {
-            if (!Utils.isDartFilename(this.currentActiveFilename())) {
+            if (!this.checkIsDartFile()) {
                 vscode.window.showWarningMessage('dartimportsorter only works on .dart files.');
                 return;
             }
@@ -22,17 +26,21 @@ export class App {
     /** Sets up listener for save action to sort imports when that happens */
     registerSortOnSaveAction() {
         return vscode.workspace.onWillSaveTextDocument((event) => {
-            if (!Utils.isDartFilename(this.currentActiveFilename())) {
+            if (!this.checkIsDartFile()) {
                 return;
             }
 
-            if (new ExtensionSettings().sortOnSaveEnabled) {
+            if (this.settings.sortOnSaveEnabled) {
                 this.sortAndReplaceImports(event.document);
             }
         });
     }
 
-    private currentActiveFilename() {
+    private checkIsDartFile() {
+        return Utils.isDartFilename(this.getCurrentActiveFilename());
+    }
+
+    private getCurrentActiveFilename() {
         return vscode.window.activeTextEditor?.document.fileName;
     }
 
@@ -47,18 +55,13 @@ export class App {
     }
 
     private sortImports(document: vscode.TextDocument): { sortedImports: string; range: Range } {
-        const documentLines = Utils.splitIntoStringArray(document.getText());
-
-        // Sort dem imports
-        const importSorter = new ImportSorter(documentLines);
-
-        const sortedImports = importSorter.sortImports();
+        const sortingResult = new ImportSorter().sortImports(document.getText());
 
         return {
-            sortedImports: sortedImports,
+            sortedImports: sortingResult.sortedImports,
             range: {
-                start: importSorter.firstRawImportIndex,
-                end: importSorter.lastRawImportIndex,
+                start: sortingResult.firstRawImportIndex,
+                end: sortingResult.lastRawImportIndex,
             },
         };
     }

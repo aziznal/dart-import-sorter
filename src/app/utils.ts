@@ -10,14 +10,10 @@ export class Utils {
     }
 
     static splitIntoStringArray(bodyOfText: string): string[] {
-        const lines = bodyOfText
-            .split('\n')
-            .map((statement) => statement.replace(/(\r\n|\n|\r)/gm, ''));
+        return bodyOfText.split('\n');
+    }
 
-        if (lines === null || lines === undefined) {
-            throw new CouldNotReadDocumentError('Undefined documentLines in top level method');
-        }
-
-        return lines;
+    static removeNewLines(str: string) {
+        return str.replace(/(\r\n|\n|\r)/gm, '');
     }
 }
