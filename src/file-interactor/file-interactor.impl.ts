@@ -1,16 +1,30 @@
 import * as vscode from 'vscode';
 
+import { IFileInteractor } from './file-interactor.interface';
+
 import { Range } from '../types/range';
 
-export class VscodeDocumentLineReplacer {
-    textEditor!: vscode.TextEditor;
+export class FileInteractor implements IFileInteractor {
+    private textEditor!: vscode.TextEditor;
 
     constructor() {
         this.textEditor = this.getTextEditor();
     }
 
+    read(filepath: string): string {
+        throw new Error('Method not implemented.');
+    }
+
+    write(filepath: string): string {
+        throw new Error('Method not implemented.');
+    }
+
+    replace(filepath: string, from: number, to: number, withLines: string): void {
+        this.replaceWith({ range: { start: from, end: to }, withLines: withLines });
+    }
+
     // REFACTOR
-    replace({ range, withLines }: { range: Range; withLines: string }) {
+    private replaceWith({ range, withLines }: { range: Range; withLines: string }) {
         if (withLines.length === 0 || range.end === -1 || range.start === -1) {
             return; // nothing to sort
         }

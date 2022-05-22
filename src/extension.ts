@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
 
 import { ExtensionSettings } from './extension-settings/extension-settings.impl';
+import { FileInteractor } from './file-interactor/file-interactor.impl';
 import { ImportSorter } from './import-sorter/import-sorter.impl';
-import { VscodeDocumentLineReplacer } from './line-replacer/line-replacer';
 import { Range } from './types/range';
 import { Utils } from './utils';
 
@@ -68,11 +68,5 @@ function sortImports(document: vscode.TextDocument): { sortedImports: string; ra
 }
 
 function replaceWithSortedImports(sortedImports: string, range: Range) {
-    // Replace unsorted imports with the sorted ones
-    const lineReplacer = new VscodeDocumentLineReplacer();
-
-    lineReplacer.replace({
-        range: range,
-        withLines: sortedImports,
-    });
+    new FileInteractor().replace('', range.start, range.end, sortedImports);
 }

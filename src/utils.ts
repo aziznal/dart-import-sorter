@@ -1,5 +1,4 @@
 import { CouldNotReadDocumentError } from './errors/could-not-read-document.error';
-import { GroupingPreference, RawGroupingPreference } from './types/grouping-preference.model';
 
 export class Utils {
     static isDartFilename(filename?: string): boolean {
