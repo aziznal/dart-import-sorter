@@ -2,7 +2,6 @@ import { IImportSorter, SortingResult } from './import-sorter.interface';
 
 import { ExtensionSettings } from '../extension-settings/extension-settings.impl';
 import { ImportGroup } from '../types/import-group';
-import { Utils } from '../utils';
 
 /**
  * Sorts imports using a basic grouping algorithm.
@@ -97,7 +96,8 @@ export class ImportSorter implements IImportSorter {
     }
 
     private getFormattedImports(rawDocumentBody: string) {
-        return Utils.splitIntoStringArray(rawDocumentBody)
+        return rawDocumentBody
+            .split('\n')
             .filter((line) => this.isImportStatement(line))
             .map((line) => line.trim());
     }

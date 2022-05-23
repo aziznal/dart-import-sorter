@@ -6,7 +6,7 @@ import { ExtensionSettings } from './extension-settings/extension-settings.impl'
 import { FileInteractor } from './file-interactor/file-interactor.impl';
 import { ImportSorter } from './import-sorter/import-sorter.impl';
 import { Range } from './types/range';
-import { Utils } from './utils';
+import { Utils } from './utils/utils';
 
 export class App {
     settings: IExtensionSettings = new ExtensionSettings();

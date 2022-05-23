@@ -171,10 +171,12 @@
         "watch": "tsc -watch -p ./",
         "pretest": "npm run compile && npm run lint",
         "lint": "eslint src --ext ts",
-        "test": "node ./out/test/runTest.js"
+        "test": "node ./out/test/runTest.js",
+        "utest": "jest"
     },
     "devDependencies": {
         "@types/glob": "^7.2.0",
+        "@types/jest": "^27.5.1",
         "@types/mocha": "^9.1.0",
         "@types/node": "14.x",
         "@types/vscode": "^1.65.0",
@@ -183,7 +185,9 @@
         "@vscode/test-electron": "^2.1.3",
         "eslint": "^8.11.0",
         "glob": "^7.2.0",
+        "jest": "^28.1.0",
         "mocha": "^9.2.2",
+        "ts-jest": "^28.0.2",
         "typescript": "^4.5.5"
     }
 }

@@ -1,5 +1,3 @@
-import { CouldNotReadDocumentError } from './errors/could-not-read-document.error';
-
 export class Utils {
     static isDartFilename(filename?: string): boolean {
         if (!filename) {
@@ -7,10 +5,6 @@ export class Utils {
         }
 
         return filename.slice(-5) === '.dart';
-    }
-
-    static splitIntoStringArray(bodyOfText: string): string[] {
-        return bodyOfText.split('\n');
     }
 
     static removeNewLines(str: string) {
