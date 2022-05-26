@@ -12,17 +12,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+#       - uses: actions/checkout@v3
 
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 14
+      - run: echo ${{ secrets.FOO }}
+
+#       - name: Setup Node
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: 14
       
-      - run: npm ci
+#       - run: npm ci
 
-      - name: Publish extension to marketplace
-        uses: HaaLeo/publish-vscode-extension@v1
-        with:
-          # Personal access token
-          pat: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+#       - name: Publish extension to marketplace
+#         uses: HaaLeo/publish-vscode-extension@v1
+#         with:
+#           # Personal access token
+#           pat: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
