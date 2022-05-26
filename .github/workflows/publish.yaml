@@ -10,7 +10,7 @@ jobs:
   build-and-publish:
     env:
       ACCESS_TOKEN: ${{ secrets.FOO }}
-      if:  env.ACCESS_TOKEN == 'foofoo
+      if:  env.ACCESS_TOKEN == 'foofoo'
       run: echo "I know what the secret token is!"
     
     runs-on: ubuntu-latest
