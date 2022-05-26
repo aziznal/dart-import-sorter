@@ -8,21 +8,21 @@ on:
 
 jobs:
   build-and-publish:
-    environment: publish-extension
     runs-on: ubuntu-latest
-
+    environment: publish-extension
     steps:
       - uses: actions/checkout@v3
-
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: 14
-      
+
       - run: npm ci
 
       - name: Publish extension to marketplace
         uses: HaaLeo/publish-vscode-extension@v1
         with:
+          registryUrl: https://marketplace.visualstudio.com
+          
           # Personal access token
-          pat: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          pat: ${{secrets.PERSONAL_ACCESS_TOKEN}}
