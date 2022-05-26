@@ -1,13 +1,16 @@
+import { inject, injectable } from 'tsyringe';
+
+import { IExtensionSettings } from '../extension-settings/extension-settings.interface';
 import { IImportSorter, SortingResult } from './import-sorter.interface';
 
-import { ExtensionSettings } from '../extension-settings/extension-settings.impl';
 import { ImportGroup } from '../types/import-group';
 
 /**
  * Sorts imports using a basic grouping algorithm.
  */
+@injectable()
 export class ImportSorter implements IImportSorter {
-    settings = new ExtensionSettings();
+    constructor(@inject('IExtensionSettings') public settings: IExtensionSettings) {}
 
     sortImports(rawDocumentBody: string): SortingResult {
         const formattedImports = this.getFormattedImports(rawDocumentBody);

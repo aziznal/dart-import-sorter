@@ -1,15 +1,13 @@
+import { injectable } from 'tsyringe';
 import * as vscode from 'vscode';
 
 import { IFileInteractor } from './file-interactor.interface';
 
 import { Range } from '../types/range';
 
+@injectable()
 export class FileInteractor implements IFileInteractor {
     private textEditor!: vscode.TextEditor;
-
-    constructor() {
-        this.textEditor = this.getTextEditor();
-    }
 
     read(filepath: string): string {
         throw new Error('Method not implemented.');
@@ -25,6 +23,8 @@ export class FileInteractor implements IFileInteractor {
 
     // REFACTOR
     private replaceWith({ range, withLines }: { range: Range; withLines: string }) {
+        this.textEditor = this.getTextEditor();
+
         if (withLines.length === 0 || range.end === -1 || range.start === -1) {
             return; // nothing to sort
         }

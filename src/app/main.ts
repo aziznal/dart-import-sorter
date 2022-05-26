@@ -1,15 +1,21 @@
+import { container, inject, injectable } from 'tsyringe';
 import * as vscode from 'vscode';
 
 import { IExtensionSettings } from './extension-settings/extension-settings.interface';
+import { IFileInteractor } from './file-interactor/file-interactor.interface';
+import { IImportSorter } from './import-sorter/import-sorter.interface';
 
-import { ExtensionSettings } from './extension-settings/extension-settings.impl';
-import { FileInteractor } from './file-interactor/file-interactor.impl';
-import { ImportSorter } from './import-sorter/import-sorter.impl';
+import { INJECTION_TOKENS } from './dependency-injection';
 import { Range } from './types/range';
 import { Utils } from './utils/utils';
 
+@injectable()
 export class App {
-    settings: IExtensionSettings = new ExtensionSettings();
+    constructor(
+        @inject(INJECTION_TOKENS.importSorter) private importSorter: IImportSorter,
+        @inject(INJECTION_TOKENS.extensionSettings) private settings: IExtensionSettings,
+        @inject(INJECTION_TOKENS.fileInteractor) private fileInteractor: IFileInteractor
+    ) {}
 
     /** Sets vscode to listen to the activation of the main command and sorts imports when it is activated */
     registerSortImportsCommand() {
@@ -30,7 +36,7 @@ export class App {
                 return;
             }
 
-            if (this.settings.sortOnSaveEnabled) {
+            if (this.settings!.sortOnSaveEnabled) {
                 this.sortAndReplaceImports(event.document);
             }
         });
@@ -55,7 +61,8 @@ export class App {
     }
 
     private sortImports(document: vscode.TextDocument): { sortedImports: string; range: Range } {
-        const sortingResult = new ImportSorter().sortImports(document.getText());
+        console.log(this.importSorter)
+        const sortingResult = this.importSorter!.sortImports(document.getText());
 
         return {
             sortedImports: sortingResult.sortedImports,
@@ -67,6 +74,6 @@ export class App {
     }
 
     private replaceWithSortedImports(sortedImports: string, range: Range) {
-        new FileInteractor().replace('', range.start, range.end, sortedImports);
+        this.fileInteractor.replace('', range.start, range.end, sortedImports);
     }
 }

@@ -189,5 +189,9 @@
         "mocha": "^9.2.2",
         "ts-jest": "^28.0.2",
         "typescript": "^4.5.5"
+    },
+    "dependencies": {
+        "reflect-metadata": "^0.1.13",
+        "tsyringe": "^4.6.0"
     }
 }

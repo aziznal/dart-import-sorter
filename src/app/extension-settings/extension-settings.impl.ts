@@ -1,3 +1,4 @@
+import { injectable } from 'tsyringe';
 import * as vscode from 'vscode';
 
 import { GroupingPreference, RawGroupingPreference } from '../types/grouping-preference.model';
@@ -8,6 +9,7 @@ import { IExtensionSettings } from './extension-settings.interface';
  * Stores refs to all extension settings. Latest state is always returned since
  * everything is implemented in getters.
  */
+@injectable()
 export class ExtensionSettings implements IExtensionSettings {
     private get extensionConfig() {
         return vscode.workspace.getConfiguration('dartimportsorter');

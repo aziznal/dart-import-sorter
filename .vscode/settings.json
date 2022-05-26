@@ -12,6 +12,7 @@
         "concatted",
         "dartimportsorter",
         "Interactor",
+        "tsyringe",
         "utest"
     ]
 }
