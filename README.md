@@ -11,7 +11,7 @@ This is a VS Code extension that sorts your dart / flutter imports with a single
     <a href="https://GitHub.com/aziznal/dart-import-sorter/releases/"><img src="https://img.shields.io/github/release/aziznal/dart-import-sorter" alt="Release"></a>
     <a href="https://marketplace.visualstudio.com/items?itemName=aziznal.dart-import-sorter"><img src="https://vsmarketplacebadge.apphb.com/installs-short/aziznal.dart-import-sorter.svg?style=flat" alt="Visual Studio Marketplace Installs"></a>
     <a href="https://marketplace.visualstudio.com/items?itemName=aziznal.dart-import-sorter"><img src="https://vsmarketplacebadge.apphb.com/version/aziznal.dart-import-sorter.svg" alt="Visual Studio Marketplace"></a>
-
+    <a href="https://github.com/aziznal/dart-import-sorter/actions/workflows/test.yaml"><img src="https://github.com/aziznal/dart-import-sorter/actions/workflows/test.yaml/badge.svg"></a>
 </p>
 
 ## Usage

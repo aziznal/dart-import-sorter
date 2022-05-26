@@ -1,51 +1,25 @@
-import { GroupingPreference } from './types/grouping-preference.model';
-import { ImportGroup } from './types/import-group';
+import { inject, injectable } from 'tsyringe';
 
-type ImportSorterConfig = {
-    leaveEmptyLinesBetweenImports: boolean;
-};
+import { IExtensionSettings } from '../extension-settings/extension-settings.interface';
+import { IImportSorter, SortingResult } from './import-sorter.interface';
 
-const defaultConfig: ImportSorterConfig = {
-    leaveEmptyLinesBetweenImports: true,
-};
+import { ImportGroup } from '../types/import-group';
 
-export class ImportSorter {
-    constructor(
-        private document: string[],
-        private sortingRules: GroupingPreference[],
-        private config: ImportSorterConfig
-    ) {}
+/**
+ * Sorts imports using a basic grouping algorithm.
+ */
+@injectable()
+export class ImportSorter implements IImportSorter {
+    constructor(@inject('IExtensionSettings') public settings: IExtensionSettings) {}
 
-    get firstImportIndex(): number {
-        return this.document.findIndex((statement) => this.isImportStatement(statement));
-    }
+    sortImports(rawDocumentBody: string): SortingResult {
+        const formattedImports = this.getFormattedImports(rawDocumentBody);
 
-    get lastImportIndex(): number {
-        if (this.document === undefined) {
-            return 0;
+        if (formattedImports.length === 0) {
+            return { sortedImports: '', firstRawImportIndex: -1, lastRawImportIndex: -1 }; // nothing to sort
         }
 
-        // reversing to find last item that matches
-        const reversedLastIndex = this.document
-            .reverse()
-            .findIndex((statement) => this.isImportStatement(statement))!;
-
-        if (reversedLastIndex === -1) {
-            return 0;
-        }
-
-        // to get real index
-        return this.document?.length - reversedLastIndex;
-    }
-
-    sortImports(): string {
-        const rawImports = this.getRawImports();
-
-        if (rawImports.length === 0) {
-            return ''; // nothing to sort
-        }
-
-        const groups = this.groupImports(rawImports);
+        const groups = this.groupImports(formattedImports);
 
         groups.forEach((group) => {
             group.imports = this.sortAlphabetically(group.imports);
@@ -53,11 +27,11 @@ export class ImportSorter {
 
         const nonEmptyGroups = this.removeEmptyGroups(groups);
 
-        if (nonEmptyGroups.length === 0) {
-            return ''; // nothing to sort
-        }
-
-        return this.flattenImportGroups(nonEmptyGroups);
+        return {
+            sortedImports: this.flattenImportGroups(nonEmptyGroups),
+            firstRawImportIndex: this.indexOfFirstRawImport(rawDocumentBody.split('\n')),
+            lastRawImportIndex: this.indexOfLastRawImport(rawDocumentBody.split('\n')),
+        };
     }
 
     private groupImports(importStatements: string[]): ImportGroup[] {
@@ -65,7 +39,7 @@ export class ImportSorter {
 
         const importGroups: ImportGroup[] = [];
 
-        this.sortingRules.forEach((preference) => {
+        this.settings.sortingRules.forEach((preference) => {
             const matchingStatements = copiedImportStatements.filter((statement) =>
                 preference.regex.test(this.strip(statement))
             );
@@ -115,19 +89,38 @@ export class ImportSorter {
             .map((group) => {
                 return group.imports.join('\n');
             })
-            .join(this.config.leaveEmptyLinesBetweenImports ? '\n\n' : '\n');
+            .join(this.settings.leaveEmptyLinesBetweenImports ? '\n\n' : '\n');
 
         return concattedGroups;
     }
 
-    private getRawImports(): string[] {
-        return this.document
+    private getFormattedImports(rawDocumentBody: string) {
+        return rawDocumentBody
+            .split('\n')
             .filter((line) => this.isImportStatement(line))
             .map((line) => line.trim());
     }
 
     private sortAlphabetically(imports: string[]): string[] {
         return imports.sort();
+    }
+
+    private indexOfFirstRawImport(rawImports: string[]): number {
+        return rawImports.findIndex((statement) => this.isImportStatement(statement));
+    }
+
+    private indexOfLastRawImport(rawDocumentLines: string[]): number {
+        // reversing to find last item that matches
+        const reversedLastIndex = rawDocumentLines
+            .reverse()
+            .findIndex((statement) => this.isImportStatement(statement))!;
+
+        if (reversedLastIndex === -1) {
+            return 0;
+        }
+
+        // to get real index
+        return rawDocumentLines.length - reversedLastIndex;
     }
 
     private isImportStatement(value: string) {

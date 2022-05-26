@@ -6,6 +6,15 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.2.1a] - 26th May (2022-05-26)
+
+### Added:
+-   Unit tests for major parts of extension
+-   Dependency injection
+
+### Fixed:
+- Messy code. Spread code pools into different coherent files / modules
+
 ## [0.2.0] - 5th May (2022-05-05)
 
 ### Added
