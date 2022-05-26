@@ -1,7 +1,7 @@
 name: Run Unit Tests
 on: [pull_request]
 jobs:
-  Build-Project:
+  Run-Unit-Tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
