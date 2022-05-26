@@ -27,10 +27,6 @@ export class ImportSorter implements IImportSorter {
 
         const nonEmptyGroups = this.removeEmptyGroups(groups);
 
-        if (nonEmptyGroups.length === 0) {
-            return { sortedImports: '', firstRawImportIndex: -1, lastRawImportIndex: -1 }; // nothing to sort
-        }
-
         return {
             sortedImports: this.flattenImportGroups(nonEmptyGroups),
             firstRawImportIndex: this.indexOfFirstRawImport(rawDocumentBody.split('\n')),
