@@ -23,4 +23,4 @@ jobs:
         uses: HaaLeo/publish-vscode-extension@v1
         with:
           # Personal access token
-          pat: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          pat: ${{secrets.PERSONAL_ACCESS_TOKEN}}
