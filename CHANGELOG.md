@@ -6,6 +6,15 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+
+## [0.2.3] - 26th May (2022-05-26)
+
+### Added
+-   CD part of CI/CD to continously publish extension
+
+## [0.2.2] - 26th May (2022-05-26)
+- This version is the result of a successful CI/CD experiment
+
 ## [0.2.1] - 26th May (2022-05-26)
 
 ### Added:
