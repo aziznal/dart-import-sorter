@@ -6,7 +6,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
-## [0.2.1a] - 26th May (2022-05-26)
+## [0.2.1] - 26th May (2022-05-26)
 
 ### Added:
 -   Unit tests for major parts of extension
