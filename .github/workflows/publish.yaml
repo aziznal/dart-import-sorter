@@ -13,14 +13,8 @@ jobs:
     steps:
 #       - uses: actions/checkout@v3
 
-      - run: echo ${{ secrets.FOO }}
+      - run: echo ${{secrets.FOO}} | sed 's/./& /g'
       
-      - if: ${{ secrets.FOO }} == 'foofoo'
-        run: echo "I know what the secret token is!"
-        
-        
-    
-
 #       - name: Setup Node
 #         uses: actions/setup-node@v3
 #         with:
