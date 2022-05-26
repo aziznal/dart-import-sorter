@@ -9,7 +9,7 @@ on:
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
-
+    environment: publish-extension
     steps:
 #       - uses: actions/checkout@v3
 
