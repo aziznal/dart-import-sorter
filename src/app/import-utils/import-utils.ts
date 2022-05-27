@@ -1,4 +1,4 @@
-import { ImportGroup } from '../types/import-group';
+import { StatementGroup } from '../types/statement-group';
 
 export class ImportUtils {
     static indexOfFirstImport(imports: string[]): number {
@@ -59,7 +59,7 @@ export class ImportUtils {
             .trim();
     }
 
-    static removeEmptyGroups(groups: ImportGroup[]): ImportGroup[] {
+    static removeEmptyGroups(groups: StatementGroup[]): StatementGroup[] {
         return groups.filter((group) => group.imports.length > 0);
     }
 }
