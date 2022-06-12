@@ -24,6 +24,7 @@ import 'dart:collection' as clc;
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod';
 import 'package:gym_app/widgets/loading.dart';
 import 'package:gym_app/widgets/main_category.dart';
 import 'package:gym_app/widgets/something_went_wrong.dart';
@@ -36,6 +37,7 @@ import '../somewhere/foo/a.dart';
 
 import 'home_viewmodel.dart';
 import 'path/to/my_other_file.dart';
+import 'package:flutter_test';
 import '../beyond/foo/a.dart';
 import '../lib/foo/a.dart';
 import '../the/foo/a.dart';
@@ -67,6 +69,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_riverpod';
+import 'package:flutter_test';
 import 'package:get/route_manager.dart';
 import 'package:my_package/foo/a.dart';
 import 'package:provider/provider.dart';
@@ -106,7 +110,7 @@ const DEFAULT_SETTINGS: IExtensionSettings = {
         },
         {
             order: 1,
-            regex: RegExp('^package:flutter.*$', 'm'),
+            regex: RegExp('^package:flutter/.*$', 'm'),
         },
         {
             order: 1,
@@ -136,7 +140,7 @@ describe('', () => {
         const sortingResult = importSorter.sortImports(DEFAULT_MESSY_IMPORTS);
 
         expect(sortingResult.firstRawImportIndex).toBe(1);
-        expect(sortingResult.lastRawImportIndex).toBe(45);
+        expect(sortingResult.lastRawImportIndex).toBe(47);
         expect(sortingResult.sortedImports).toBe(DEFAULT_SORTED_IMPORTS);
     });
 
@@ -147,7 +151,7 @@ describe('', () => {
         const sortingResult = importSorter.sortImports(DEFAULT_MESSY_IMPORTS);
 
         expect(sortingResult.firstRawImportIndex).toBe(1);
-        expect(sortingResult.lastRawImportIndex).toBe(45);
+        expect(sortingResult.lastRawImportIndex).toBe(47);
         expect(sortingResult.sortedImports).toBe(DEFAULT_SORTED_IMPORTS);
     });
 

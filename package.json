@@ -88,7 +88,7 @@
                         },
                         {
                             "label": "Flutter",
-                            "regex": "^package:flutter.*$",
+                            "regex": "^package:flutter/.*$",
                             "order": 10,
                             "regexFlags": [
                                 "m"
