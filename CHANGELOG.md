@@ -7,6 +7,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [Unreleased]
 
 
+## [0.2.6] - 12th June (2022-06-12)
+### Added:
+-   Improved flutter package detection. packages starting with 'flutter_' are classified different from official flutter packages
+
 ## [0.2.3] - 26th May (2022-05-26)
 
 ### Added

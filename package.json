@@ -7,7 +7,7 @@
     "icon": "icon.png",
     "displayName": "Dart Import Sorter",
     "description": "Sorts and groups import statements in your dart files",
-    "version": "0.2.5",
+    "version": "0.2.6",
     "engines": {
         "vscode": "^1.65.0"
     },
@@ -88,7 +88,7 @@
                         },
                         {
                             "label": "Flutter",
-                            "regex": "^package:flutter.*$",
+                            "regex": "^package:flutter/.*$",
                             "order": 10,
                             "regexFlags": [
                                 "m"
