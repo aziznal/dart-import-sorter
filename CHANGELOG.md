@@ -4,7 +4,11 @@ All notable changes to the "dartimportsorter" extension will be documented in th
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [Unreleased]
+
+## [0.2.7] - 19th June (2022-06-19)
+### Added:
+-   Support for double quotes in import statements
+-   'Buy me a coffee' button. Any support is appreciated.
 
 
 ## [0.2.6] - 12th June (2022-06-12)
