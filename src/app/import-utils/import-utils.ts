@@ -35,16 +35,16 @@ export class ImportUtils {
         return imports.sort();
     }
 
-    /** 
+    /**
      * Returns only the path part of an import
-     * 
+     *
      * Example:
      * ```dart
      * import 'path/to/import.dart' as some_import;
      * ```
-     * 
+     *
      * becomes
-     * 
+     *
      * ```dart
      * 'path/to/import.dart'
      * ```
@@ -53,6 +53,7 @@ export class ImportUtils {
         return statement
             .trim()
             .replace(/'/g, '')
+            .replace(/"/g, '')
             .replace(/;/g, '')
             .replace('import ', '')
             .replace(/ as .*/, '')

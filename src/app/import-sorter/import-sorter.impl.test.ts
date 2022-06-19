@@ -12,22 +12,22 @@ import 'package:my_package/foo/a.dart';
 import 'package:provider/provider.dart';
 import 'package:test/test.dart';
 
-import 'package:gym_app/constants/custom_colors.dart';
+import "package:gym_app/constants/custom_colors.dart";
 
 
-import 'package:gym_app/generated/locale_keys.g.dart';
-import 'package:gym_app/src/app.dart';
-import 'package:gym_app/src/app_routes.dart';
-import 'package:gym_app/src/widgets/loading_display/rotating_dumbbell_widget.dart';
+import "package:gym_app/generated/locale_keys.g.dart";
+import "package:gym_app/src/app.dart";
+import "package:gym_app/src/app_routes.dart";
+import "package:gym_app/src/widgets/loading_display/rotating_dumbbell_widget.dart";
 import 'dart:async' as something_else;
 import 'dart:collection' as clc;
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod';
-import 'package:gym_app/widgets/loading.dart';
-import 'package:gym_app/widgets/main_category.dart';
-import 'package:gym_app/widgets/something_went_wrong.dart';
+import "package:gym_app/widgets/loading.dart";
+import "package:gym_app/widgets/main_category.dart";
+import "package:gym_app/widgets/something_went_wrong.dart";
 
 
 
@@ -41,17 +41,17 @@ import 'package:flutter_test';
 import '../beyond/foo/a.dart';
 import '../lib/foo/a.dart';
 import '../the/foo/a.dart';
-import 'package:gym_app/src/pages/auth/widgets/sign_in_page.dart';
-import 'package:gym_app/src/theme/app_theme.dart';
-import 'package:gym_app/src/widgets/loading_display/fading_loading_text_widget.dart';
+import "package:gym_app/src/pages/auth/widgets/sign_in_page.dart";
+import "package:gym_app/src/theme/app_theme.dart";
+import "package:gym_app/src/widgets/loading_display/fading_loading_text_widget.dart";
 
 
 
-import 'package:gym_app/src/widgets/loading_display/rotating_dumbbell_widget.dart';
+import "package:gym_app/src/widgets/loading_display/rotating_dumbbell_widget.dart";
 
 
-import 'package:gym_app/di/service_locator.dart';
-import 'package:gym_app/domain/category/models/category.dart';
+import "package:gym_app/di/service_locator.dart";
+import "package:gym_app/domain/category/models/category.dart";
 
 
 
@@ -76,20 +76,20 @@ import 'package:my_package/foo/a.dart';
 import 'package:provider/provider.dart';
 import 'package:test/test.dart';
 
-import 'package:gym_app/constants/custom_colors.dart';
-import 'package:gym_app/di/service_locator.dart';
-import 'package:gym_app/domain/category/models/category.dart';
-import 'package:gym_app/generated/locale_keys.g.dart';
-import 'package:gym_app/src/app.dart';
-import 'package:gym_app/src/app_routes.dart';
-import 'package:gym_app/src/pages/auth/widgets/sign_in_page.dart';
-import 'package:gym_app/src/theme/app_theme.dart';
-import 'package:gym_app/src/widgets/loading_display/fading_loading_text_widget.dart';
-import 'package:gym_app/src/widgets/loading_display/rotating_dumbbell_widget.dart';
-import 'package:gym_app/src/widgets/loading_display/rotating_dumbbell_widget.dart';
-import 'package:gym_app/widgets/loading.dart';
-import 'package:gym_app/widgets/main_category.dart';
-import 'package:gym_app/widgets/something_went_wrong.dart';
+import "package:gym_app/constants/custom_colors.dart";
+import "package:gym_app/di/service_locator.dart";
+import "package:gym_app/domain/category/models/category.dart";
+import "package:gym_app/generated/locale_keys.g.dart";
+import "package:gym_app/src/app.dart";
+import "package:gym_app/src/app_routes.dart";
+import "package:gym_app/src/pages/auth/widgets/sign_in_page.dart";
+import "package:gym_app/src/theme/app_theme.dart";
+import "package:gym_app/src/widgets/loading_display/fading_loading_text_widget.dart";
+import "package:gym_app/src/widgets/loading_display/rotating_dumbbell_widget.dart";
+import "package:gym_app/src/widgets/loading_display/rotating_dumbbell_widget.dart";
+import "package:gym_app/widgets/loading.dart";
+import "package:gym_app/widgets/main_category.dart";
+import "package:gym_app/widgets/something_went_wrong.dart";
 
 import '../beyond/foo/a.dart';
 import '../lib/foo/a.dart';
