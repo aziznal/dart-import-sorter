@@ -5,6 +5,10 @@ All notable changes to the "dartimportsorter" extension will be documented in th
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
 
+## [0.2.8] - 19th June (2022-06-19)
+### Added:
+-   Ability to automatically detect current project name from pubspec.yaml file
+
 ## [0.2.7] - 19th June (2022-06-19)
 ### Added:
 -   Support for double quotes in import statements

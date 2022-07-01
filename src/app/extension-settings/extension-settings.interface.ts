@@ -6,4 +6,6 @@ export interface IExtensionSettings {
     get sortingRules(): GroupingPreference[];
 
     get sortOnSaveEnabled(): boolean;
+
+    get projectName(): string;
 }

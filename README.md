@@ -100,19 +100,19 @@ The extension comes with the following default rules:
     },
     {
         "label": "Flutter",
-        "regex": "^package:flutter.*$",
+        "regex": "^package:flutter/.*$",
         "order": 10,
         "regexFlags": ["m"]
     },
     {
         "label": "Package imports that are NOT your app",
-        "regex": "^package:(?!your_app_name_here).*$",
+        "regex": "^package:(?!<app_name>).*$",
         "order": 100,
         "regexFlags": ["m"]
     },
     {
         "label": "Package imports that ARE your app",
-        "regex": "^package:your_app_name_here.*$",
+        "regex": "^package:<app_name>.*$",
         "order": 101,
         "regexFlags": ["m"]
     },
@@ -124,6 +124,8 @@ The extension comes with the following default rules:
     }
 ]
 ```
+
+You project name is detected automatically from pubspec.yaml and replaces `<app_name>` when the extension is used. You can use the `<app_name>` placeholder in any custom rules you write.
 
 If you don't provide custom rules in settings.json, then the extension will use these rules by default. If you provide any configuration whatsoever, then the extension will use only your configuration, completely disregarding the defaults.
 

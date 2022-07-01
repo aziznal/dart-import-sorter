@@ -13,6 +13,7 @@ describe('Default extension settings', () => {
                     regex: RegExp('^.*$'),
                 },
             ],
+            projectName: '',
         };
     });
 
