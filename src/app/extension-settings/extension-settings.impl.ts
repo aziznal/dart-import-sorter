@@ -5,6 +5,8 @@ import { GroupingPreference, RawGroupingPreference } from '../types/grouping-pre
 
 import { IExtensionSettings } from './extension-settings.interface';
 
+import { Utils } from '../utils/utils';
+
 import fs = require('fs');
 
 /**
@@ -71,17 +73,17 @@ export class ExtensionSettings implements IExtensionSettings {
     private getProjectNameFromPubspecFile(pubspecContents: string): string {
         const nameProperty = pubspecContents
             .split('\n')
-            .find((property) => this.removeSpaces(property.split(':')[0]) === 'name');
+            .find((property) => Utils.removeSpaces(property.split(':')[0]) === 'name');
 
         if (nameProperty === undefined) {
-            throw new Error('Could find name property in pubspec.yaml');
+            vscode.window.showInformationMessage(
+                'Could not find name property in pubspec.yaml. Your imports may not be sorted correctly until this is fixed.'
+            );
+
+            return '';
         }
 
-        return this.removeSpaces(nameProperty.split(':')[1]);
-    }
-
-    private removeSpaces(value: string): string {
-        return value.split(' ').join('');
+        return Utils.removeSpaces(nameProperty.split(':')[1]);
     }
 
     private getPubspecFile(): string {

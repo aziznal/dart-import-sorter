@@ -24,4 +24,18 @@ describe('', () => {
         expect(Utils.removeNewLines('\n\n\n')).toStrictEqual('');
         expect(Utils.removeNewLines('')).toStrictEqual('');
     });
+
+    test('should remove spaces from given string', () => {
+        expect(Utils.removeSpaces('There are spaces in this string')).toBe(
+            'Therearespacesinthisstring'
+        );
+
+        expect(Utils.removeSpaces('              ')).toBe('');
+
+        expect(
+            Utils.removeSpaces(
+                '            Romeo                      &                 Juliet             '
+            )
+        ).toBe('Romeo&Juliet');
+    });
 });
