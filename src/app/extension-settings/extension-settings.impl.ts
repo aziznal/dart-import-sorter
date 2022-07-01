@@ -87,11 +87,11 @@ export class ExtensionSettings implements IExtensionSettings {
     }
 
     private getPubspecFile(): string {
-        return fs.readFileSync(this.projectRootUri.path + '/pubspec.yaml').toString();
+        return fs.readFileSync(this.projectRootUri.fsPath + '/pubspec.yaml').toString();
     }
 
     private pubspecFileExists(): boolean {
-        return fs.readdirSync(this.projectRootUri.path).includes('pubspec.yaml');
+        return fs.readdirSync(this.projectRootUri.fsPath).includes('pubspec.yaml');
     }
 
     private replacePlaceholderWithProjectName(rule: GroupingPreference) {
