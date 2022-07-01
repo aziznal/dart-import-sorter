@@ -34,21 +34,7 @@ export class ExtensionSettings implements IExtensionSettings {
     }
 
     get projectName(): string {
-        const pubspecFile = this.getPubspecFile();
-
-        try {
-            const projectName = this.getProjectNameFromPubspecFile(pubspecFile);
-
-            return projectName;
-        } catch (e: unknown) {
-            vscode.window.showInformationMessage(
-                'Could not find a pubspec.yaml file in your project. Imports may be sorted incorrectly until you fix this.'
-            );
-
-            throw new Error(
-                'Could not find a pubspec.yaml file in your project. Imports may be sorted incorrectly until you fix this.'
-            );
-        }
+        return this.getProjectNameFromPubspecFile(this.getPubspecFile());
     }
 
     private getSortingRules() {
@@ -56,18 +42,30 @@ export class ExtensionSettings implements IExtensionSettings {
             'matchingRules'
         ) as RawGroupingPreference[];
 
-        return this.parseSortingRules(rawSortingRules);
+        return this.getParsedSortingRules(rawSortingRules);
     }
 
-    private parseSortingRules(rawSortingRules: RawGroupingPreference[]): GroupingPreference[] {
-        const formattedRules = rawSortingRules.map((rule) => {
+    private getParsedSortingRules(rawSortingRules: RawGroupingPreference[]): GroupingPreference[] {
+        let rules = this.parseRawRules(rawSortingRules);
+
+        rules = this.replacePlaceHoldersInRules(rules);
+
+        return rules;
+    }
+
+    private parseRawRules(rawSortingRules: RawGroupingPreference[]) {
+        return rawSortingRules.map((rule) => {
             return {
                 order: rule.order,
                 regex: RegExp(rule.regex, rule.regexFlags.join('')),
             };
         });
+    }
 
-        return formattedRules;
+    private replacePlaceHoldersInRules(rules: GroupingPreference[]) {
+        return rules.map((rule) => {
+            return this.replacePlaceholderWithProjectName(rule);
+        });
     }
 
     private getProjectNameFromPubspecFile(pubspecContents: string): string {
@@ -87,14 +85,19 @@ export class ExtensionSettings implements IExtensionSettings {
     }
 
     private getPubspecFile(): string {
-        const dirContents = fs.readdirSync(this.projectRootUri.path);
+        return fs.readFileSync(this.projectRootUri.path + '/pubspec.yaml').toString();
+    }
 
-        if (!dirContents.includes('pubspec.yaml')) {
-            throw new Error('Could not find pubspec.yaml file');
+    private pubspecFileExists(): boolean {
+        return fs.readdirSync(this.projectRootUri.path).includes('pubspec.yaml');
+    }
+
+    private replacePlaceholderWithProjectName(rule: GroupingPreference) {
+        if (!this.pubspecFileExists()) {
+            return rule;
         }
 
-        const pubspecFile = fs.readFileSync(this.projectRootUri.path + '/pubspec.yaml').toString();
-
-        return pubspecFile;
+        rule.regex = new RegExp(rule.regex.source.replace('<app_name>', this.projectName));
+        return rule;
     }
 }
