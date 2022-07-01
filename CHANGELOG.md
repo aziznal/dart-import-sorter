@@ -5,7 +5,11 @@ All notable changes to the "dartimportsorter" extension will be documented in th
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
 
-## [0.2.8] - 19th June (2022-06-19)
+## [0.2.9] - 1st July (2022-07-01)
+### Hotfix:
+-   Switched extension to use platform-specific paths
+
+## [0.2.8] - 1st July (2022-07-01)
 ### Added:
 -   Ability to automatically detect current project name from pubspec.yaml file
 

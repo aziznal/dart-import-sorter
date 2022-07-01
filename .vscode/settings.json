@@ -13,6 +13,7 @@
         "dartimportsorter",
         "Interactor",
         "tsyringe",
-        "utest"
+        "utest",
+        "pubspec"
     ]
 }
