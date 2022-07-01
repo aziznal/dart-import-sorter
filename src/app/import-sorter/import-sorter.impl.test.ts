@@ -125,6 +125,8 @@ const DEFAULT_SETTINGS: IExtensionSettings = {
             regex: RegExp('^\\..*$', 'm'),
         },
     ],
+
+    projectName: '',
 };
 
 describe('', () => {

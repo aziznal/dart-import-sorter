@@ -5,12 +5,14 @@ import { IFileInteractor } from './file-interactor.interface';
 
 import { Range } from '../types/range';
 
+import * as fs from 'fs';
+
 @injectable()
 export class FileInteractor implements IFileInteractor {
     private textEditor!: vscode.TextEditor;
 
     read(filepath: string): string {
-        throw new Error('Method not implemented.');
+        return fs.readFileSync(filepath).toString();
     }
 
     write(filepath: string): string {

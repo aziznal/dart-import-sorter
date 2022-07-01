@@ -13,8 +13,8 @@ import { Utils } from './utils/utils';
 export class App {
     constructor(
         @inject(INJECTION_TOKENS.importSorter) private importSorter: IImportSorter,
-        @inject(INJECTION_TOKENS.extensionSettings) private settings: IExtensionSettings,
-        @inject(INJECTION_TOKENS.fileInteractor) private fileInteractor: IFileInteractor
+        @inject(INJECTION_TOKENS.fileInteractor) private fileInteractor: IFileInteractor,
+        @inject(INJECTION_TOKENS.extensionSettings) private settings: IExtensionSettings
     ) {}
 
     /** Sets vscode to listen to the activation of the main command and sorts imports when it is activated */
@@ -61,7 +61,6 @@ export class App {
     }
 
     private sortImports(document: vscode.TextDocument): { sortedImports: string; range: Range } {
-        console.log(this.importSorter)
         const sortingResult = this.importSorter!.sortImports(document.getText());
 
         return {
