@@ -10,4 +10,8 @@ export class Utils {
     static removeNewLines(str: string) {
         return str.replace(/(\r\n|\n|\r)/gm, '');
     }
+
+    static removeSpaces(str: string): string {
+        return str.split(' ').join('');
+    }
 }
