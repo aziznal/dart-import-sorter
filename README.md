@@ -144,9 +144,9 @@ If you don't provide custom rules in settings.json, then the extension will use 
 See [Changelog](./CHANGELOG.md)
 
 ## Contribution
+Make a pull request with your changes to be merged with the `develop` branch as it's what I use for staging. Reference an issue if it's available and add me (@aziznal) as a reviewer. Make sure unit tests pass and we'll get your PR sorted in no time! Oh, and please add unit tests for any new features that may require them.
 
-Contact me at aziznal.dev@gmail.com. I'd love to collaborate!
-
+If you have any questions, contact me at aziznal.dev@gmail.com
 ---
 
 ### Note
