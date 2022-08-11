@@ -4,6 +4,9 @@ All notable changes to the "dartimportsorter" extension will be documented in th
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.2.10] - 12th August (2022-08-12)
+### Bugfix:
+-   Remove newline chars from parsed project name in pubspec.yaml
 
 ## [0.2.9] - 1st July (2022-07-01)
 ### Hotfix:
