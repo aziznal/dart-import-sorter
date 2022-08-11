@@ -83,7 +83,7 @@ export class ExtensionSettings implements IExtensionSettings {
             return '';
         }
 
-        return Utils.removeSpaces(nameProperty.split(':')[1]);
+        return Utils.removeNewLines(Utils.removeSpaces(nameProperty.split(':')[1]));
     }
 
     private getPubspecFile(): string {
