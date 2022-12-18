@@ -1,3 +1,4 @@
+import { ImportType } from './../types/import-types';
 import { ImportUtils } from './import-utils';
 
 describe('Import Utils', () => {
@@ -73,5 +74,11 @@ import 'bla4';`.split('\n');
         ];
 
         expect(ImportUtils.sortAlphabetically(imports)).toStrictEqual(sortedImports);
+    });
+
+    test.only('detects import type', () => {
+        const packageImport = 'package:packageName/package_name.dart';
+
+        expect(ImportUtils.getImportType(packageImport)).toBe(ImportType.package);
     });
 });

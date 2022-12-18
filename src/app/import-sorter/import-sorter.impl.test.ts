@@ -129,7 +129,7 @@ const DEFAULT_SETTINGS: IExtensionSettings = {
     projectName: '',
 };
 
-describe('', () => {
+describe('Import Sorting', () => {
     let importSorter: IImportSorter;
     let settings: IExtensionSettings;
 
@@ -195,3 +195,28 @@ import 'viewmodel.dart';`;
         expect(sortingResult.sortedImports).toBe('');
     });
 });
+
+// const NO_SORTING_SETTINGS: IExtensionSettings = {
+//     leaveEmptyLinesBetweenImports: true,
+//     sortOnSaveEnabled: false,
+//     sortingRules: [
+//         {
+//             order: 1,
+//             regex: RegExp('^\\..*$', 'm'),
+//         },
+//     ],
+
+//     projectName: '',
+// };
+
+// describe.only('Import Type Changing', () => {
+//     let importSorter: IImportSorter;
+//     let settings: IExtensionSettings;
+
+//     beforeEach(() => {
+//         settings = NO_SORTING_SETTINGS;
+//         importSorter = new ImportSorter(settings);
+//     });
+
+//     test('Converts absolute imports to package imports', () => {});
+// });

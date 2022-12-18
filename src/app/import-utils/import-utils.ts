@@ -1,3 +1,4 @@
+import { ImportType } from './../types/import-types';
 import { StatementGroup } from '../types/statement-group';
 
 export class ImportUtils {
@@ -62,5 +63,17 @@ export class ImportUtils {
 
     static removeEmptyGroups(groups: StatementGroup[]): StatementGroup[] {
         return groups.filter((group) => group.imports.length > 0);
+    }
+
+    static getImportType(importStatement: string): ImportType | null {
+        if (this.isPackageImport(importStatement)) {
+            return ImportType.package;
+        }
+
+        return null;
+    }
+
+    private static isPackageImport(importStatement: string): boolean {
+        return true;
     }
 }
