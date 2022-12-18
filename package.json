@@ -173,7 +173,8 @@
         "lint": "eslint src --ext ts",
         "test": "node ./out/test/runTest.js",
         "utest": "jest",
-        "utest:coverage": "jest --coverage"
+        "utest:coverage": "jest --coverage",
+        "utest:watch": "jest --watch"
     },
     "devDependencies": {
         "@types/glob": "^7.2.0",
