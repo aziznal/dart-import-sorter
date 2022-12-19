@@ -1,5 +1,6 @@
 export enum ImportType {
     package,
     relative,
-    absolute
+    absolute,
+    builtin
 }

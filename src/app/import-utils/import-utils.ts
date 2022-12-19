@@ -70,10 +70,34 @@ export class ImportUtils {
             return ImportType.package;
         }
 
+        if (this.isRelativeImport(importStatement)) {
+            return ImportType.relative;
+        }
+
+        if (this.isAbsoluteImport(importStatement)) {
+            return ImportType.absolute;
+        }
+
+        if (this.isBuiltinImport(importStatement)) {
+            return ImportType.builtin;
+        }
+
         return null;
     }
 
     private static isPackageImport(importStatement: string): boolean {
-        return true;
+        return RegExp('^package:.*.dart$').test(importStatement);
+    }
+
+    private static isRelativeImport(importStatement: string): boolean {
+        return RegExp('^../.*.dart$').test(importStatement);
+    }
+
+    private static isAbsoluteImport(importStatement: string): boolean {
+        return RegExp('^\w(?!.*:)+\/*.*\.dart$').test(importStatement);
+    }
+
+    private static isBuiltinImport(importStatement: string): boolean {
+        return RegExp('^.*$').test(importStatement);
     }
 }

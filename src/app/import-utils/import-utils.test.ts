@@ -76,9 +76,13 @@ import 'bla4';`.split('\n');
         expect(ImportUtils.sortAlphabetically(imports)).toStrictEqual(sortedImports);
     });
 
-    test.only('detects import type', () => {
-        const packageImport = 'package:packageName/package_name.dart';
+    test.only('detects package import type', () => {
+        expect(ImportUtils.getImportType("package:packageName/package_name.dart")).toBe(ImportType.package);
+        
+        expect(ImportUtils.getImportType("../path/package_name.dart")).toBe(ImportType.relative);
+        
+        expect(ImportUtils.getImportType("src/lib/path/package_name.dart")).toBe(ImportType.absolute);
 
-        expect(ImportUtils.getImportType(packageImport)).toBe(ImportType.package);
+        // expect(ImportUtils.getImportType("dart:io")).toBe(ImportType.builtin);
     });
 });
