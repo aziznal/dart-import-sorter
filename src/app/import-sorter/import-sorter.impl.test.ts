@@ -141,7 +141,7 @@ describe('', () => {
     test('Groups imports correctly with default settings', () => {
         const sortingResult = importSorter.sortImports(DEFAULT_MESSY_IMPORTS);
 
-        expect(sortingResult.firstRawImportIndex).toBe(1);
+        expect(sortingResult.firstRawImportIndex).toBe(2);
         expect(sortingResult.lastRawImportIndex).toBe(47);
         expect(sortingResult.sortedImports).toBe(DEFAULT_SORTED_IMPORTS);
     });
@@ -152,7 +152,7 @@ describe('', () => {
 
         const sortingResult = importSorter.sortImports(DEFAULT_MESSY_IMPORTS);
 
-        expect(sortingResult.firstRawImportIndex).toBe(1);
+        expect(sortingResult.firstRawImportIndex).toBe(2);
         expect(sortingResult.lastRawImportIndex).toBe(47);
         expect(sortingResult.sortedImports).toBe(DEFAULT_SORTED_IMPORTS);
     });
@@ -163,8 +163,8 @@ describe('', () => {
 
         const messyImports = `import 'viewmodel.dart';
 import 'dart:async';
-import package:flutter/material.dart;
-import package:gym_app/constants;
+import 'package:flutter/material.dart';
+import 'package:gym_app/constants';
 
 
 
@@ -173,18 +173,18 @@ import 'dart:math';
 import '../beyond/foo/something.dart';
 `;
 
-        const sortedImports = `import 'dart:async';
+        const expectedSortedImports = `import 'dart:async';
 import 'dart:math';
-import package:flutter/material.dart;
-import package:gym_app/constants;
+import 'package:flutter/material.dart';
+import 'package:gym_app/constants';
 import '../beyond/foo/something.dart';
 import 'viewmodel.dart';`;
 
         const sortingResult = importSorter.sortImports(messyImports);
 
-        expect(sortingResult.firstRawImportIndex).toBe(0);
+        expect(sortingResult.firstRawImportIndex).toBe(1);
         expect(sortingResult.lastRawImportIndex).toBe(10);
-        expect(sortingResult.sortedImports).toBe(sortedImports);
+        expect(sortingResult.sortedImports).toBe(expectedSortedImports);
     });
 
     test('Return no result when there are no imports to sort', () => {

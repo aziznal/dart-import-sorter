@@ -1,5 +1,7 @@
+import { ImportStatement } from './import-statement.model';
+
 export type StatementGroup = {
     groupRegex: RegExp;
-    imports: string[];
+    imports: ImportStatement[];
 	order: number;
 };

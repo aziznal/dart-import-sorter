@@ -61,7 +61,7 @@ export class App {
     }
 
     private sortImports(document: vscode.TextDocument): { sortedImports: string; range: Range } {
-        const sortingResult = this.importSorter!.sortImports(document.getText());
+        const sortingResult = this.importSorter.sortImports(document.getText());
 
         return {
             sortedImports: sortingResult.sortedImports,
@@ -73,6 +73,7 @@ export class App {
     }
 
     private replaceWithSortedImports(sortedImports: string, range: Range) {
-        this.fileInteractor.replace('', range.start, range.end, sortedImports);
+        // replacing a range seems to be non-inclusive of the start index, so we need to subtract 1
+        this.fileInteractor.replace('', range.start - 1, range.end, sortedImports);
     }
 }
