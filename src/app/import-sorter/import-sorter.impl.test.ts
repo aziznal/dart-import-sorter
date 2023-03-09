@@ -101,7 +101,7 @@ import 'home_viewmodel.dart';
 import 'path/to/my_other_file.dart';`;
 
 const DEFAULT_SETTINGS: IExtensionSettings = {
-    leaveEmptyLinesBetweenImports: true,
+    leaveEmptyLinesBetweenImports: false,
     sortOnSaveEnabled: false,
     sortingRules: [
         {
@@ -138,7 +138,10 @@ describe('', () => {
         importSorter = new ImportSorter(settings);
     });
 
-    test('Groups imports correctly with default settings', () => {
+    test('Groups imports correctly with default settings, but with line breaks enabled', () => {
+        settings = { ...settings, leaveEmptyLinesBetweenImports: true };
+        importSorter = new ImportSorter(settings);
+
         const sortingResult = importSorter.sortImports(DEFAULT_MESSY_IMPORTS);
 
         expect(sortingResult.firstRawImportIndex).toBe(2);
@@ -186,6 +189,143 @@ import 'viewmodel.dart';`;
         expect(sortingResult.lastRawImportIndex).toBe(10);
         expect(sortingResult.sortedImports).toBe(expectedSortedImports);
     });
+
+    test('Sorts a basic list of consecutive imports', () => {
+        const messyImports = `import 'viewmodel.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:gym_app/constants';
+import 'dart:math';
+import '../beyond/foo/something.dart';
+`;
+
+        const expectedSortedImports = `import 'dart:async';
+import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:gym_app/constants';
+import '../beyond/foo/something.dart';
+import 'viewmodel.dart';`;
+
+        const sortingResult = importSorter.sortImports(messyImports);
+
+        expect(sortingResult.firstRawImportIndex).toBe(1);
+        expect(sortingResult.lastRawImportIndex).toBe(6);
+        expect(sortingResult.sortedImports).toBe(expectedSortedImports);
+
+        // Sorting again should not change anything
+        const sortingResult2 = importSorter.sortImports(sortingResult.sortedImports);
+
+        expect(sortingResult2.firstRawImportIndex).toBe(1);
+        expect(sortingResult2.lastRawImportIndex).toBe(6);
+
+        expect(sortingResult2.sortedImports).toBe(expectedSortedImports);
+    });
+
+    test('Sorts a list of consecutive imports, with line breaks', () => {
+        const messyImports = `import 'viewmodel.dart';
+import 'dart:async';
+
+
+
+
+
+
+
+
+
+
+import 'package:flutter/material.dart';
+import 'package:gym_app/constants';
+
+
+import 'dart:math';
+
+import '../beyond/foo/something.dart';
+`;
+
+        const expectedSortedImports = `import 'dart:async';
+import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:gym_app/constants';
+import '../beyond/foo/something.dart';
+import 'viewmodel.dart';`;
+
+        const sortingResult = importSorter.sortImports(messyImports);
+
+        expect(sortingResult.firstRawImportIndex).toBe(1);
+        expect(sortingResult.lastRawImportIndex).toBe(19);
+        expect(sortingResult.sortedImports).toBe(expectedSortedImports);
+
+        // Sorting again should not change anything (but last index is now 6 because line breaks were removed in the first sort)
+        const sortingResult2 = importSorter.sortImports(sortingResult.sortedImports);
+
+        expect(sortingResult2.firstRawImportIndex).toBe(1);
+        expect(sortingResult2.lastRawImportIndex).toBe(6);
+
+        expect(sortingResult2.sortedImports).toBe(expectedSortedImports);
+    });
+
+    // FIXME
+    test('Sorts a list of consecutive imports, with comments (especially the last import)', () => {
+        const messyImports = `// I was the first import
+import 'viewmodel.dart';
+// I was the second import
+import 'dart:async';
+// I was the third import
+import 'package:flutter/material.dart';
+// I was the fourth import
+import 'package:gym_app/constants';
+// I was the fifth import
+import 'dart:math';
+// I was the sixth import
+import '../beyond/foo/something.dart';
+`;
+
+        const expectedSortedImports = `// I was the second import
+import 'dart:async';
+// I was the fifth import
+import 'dart:math';
+// I was the third import
+import 'package:flutter/material.dart';
+// I was the fourth import
+import 'package:gym_app/constants';
+// I was the sixth import
+import '../beyond/foo/something.dart';
+// I was the first import
+import 'viewmodel.dart';`;
+
+        console.log(messyImports);
+        console.log(expectedSortedImports);
+
+        const sortingResult = importSorter.sortImports(messyImports);
+
+        expect(sortingResult.firstRawImportIndex).toBe(1);
+        expect(sortingResult.lastRawImportIndex).toBe(12);
+        expect(sortingResult.sortedImports).toBe(expectedSortedImports);
+
+        // Sorting again should not change anything
+        const sortingResult2 = importSorter.sortImports(sortingResult.sortedImports);
+
+        expect(sortingResult2.firstRawImportIndex).toBe(1);
+        expect(sortingResult2.lastRawImportIndex).toBe(12);
+
+        expect(sortingResult2.sortedImports).toBe(expectedSortedImports);
+    });
+
+    // TODO
+    test('Sorts a list of imports, with comments and line breaks', () => {});
+
+    // TODO
+    test('Sorts a consecutive list of imports, with annotations', () => {});
+
+    // TODO
+    test('Sorts a list of imports, with annotations and line breaks', () => {});
+
+    // TODO
+    test('Sorts a list of imports, with comments and annotations', () => {});
+
+    // TODO
+    test('Sorts a list of imports, with comments, annotations, and line breaks', () => {});
 
     test('Return no result when there are no imports to sort', () => {
         const sortingResult = importSorter.sortImports('');

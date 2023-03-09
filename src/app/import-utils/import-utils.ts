@@ -34,6 +34,13 @@ export class ImportUtils {
                     currentImport = new ImportStatement(line, lineNumber);
                 } else {
                     currentImport.rawBody += '\n' + line;
+
+                    // incrementing only when not first import, because first
+                    // import's first line number is important (compared to the
+                    // last import, in which only the last line number matters)
+                    if (imports.length > 0) {
+                        currentImport.lineNumber += 1;
+                    }
                 }
 
                 imports.push(currentImport);
@@ -47,6 +54,13 @@ export class ImportUtils {
                     currentImport = new ImportStatement(line, lineNumber);
                 } else {
                     currentImport.rawBody += '\n' + line;
+
+                    // incrementing only when not first import, because first
+                    // import's first line number is important (compared to the
+                    // last import, in which only the last line number matters)
+                    if (imports.length > 0) {
+                        currentImport.lineNumber += 1;
+                    }
                 }
 
                 return;
