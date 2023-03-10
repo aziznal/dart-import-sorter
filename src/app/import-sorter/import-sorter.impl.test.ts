@@ -101,7 +101,7 @@ import 'home_viewmodel.dart';
 import 'path/to/my_other_file.dart';`;
 
 const DEFAULT_SETTINGS: IExtensionSettings = {
-    leaveEmptyLinesBetweenImports: true,
+    leaveEmptyLinesBetweenImports: false,
     sortOnSaveEnabled: false,
     sortingRules: [
         {
@@ -138,10 +138,13 @@ describe('', () => {
         importSorter = new ImportSorter(settings);
     });
 
-    test('Groups imports correctly with default settings', () => {
+    test('Groups imports correctly with default settings, but with line breaks enabled', () => {
+        settings = { ...settings, leaveEmptyLinesBetweenImports: true };
+        importSorter = new ImportSorter(settings);
+
         const sortingResult = importSorter.sortImports(DEFAULT_MESSY_IMPORTS);
 
-        expect(sortingResult.firstRawImportIndex).toBe(1);
+        expect(sortingResult.firstRawImportIndex).toBe(2);
         expect(sortingResult.lastRawImportIndex).toBe(47);
         expect(sortingResult.sortedImports).toBe(DEFAULT_SORTED_IMPORTS);
     });
@@ -152,19 +155,19 @@ describe('', () => {
 
         const sortingResult = importSorter.sortImports(DEFAULT_MESSY_IMPORTS);
 
-        expect(sortingResult.firstRawImportIndex).toBe(1);
+        expect(sortingResult.firstRawImportIndex).toBe(2);
         expect(sortingResult.lastRawImportIndex).toBe(47);
         expect(sortingResult.sortedImports).toBe(DEFAULT_SORTED_IMPORTS);
     });
 
-    test("Doesn't leave new lines between groups", () => {
+    test('Does not leave new lines between groups', () => {
         settings = { ...settings, leaveEmptyLinesBetweenImports: false };
         importSorter = new ImportSorter(settings);
 
         const messyImports = `import 'viewmodel.dart';
 import 'dart:async';
-import package:flutter/material.dart;
-import package:gym_app/constants;
+import 'package:flutter/material.dart';
+import 'package:gym_app/constants';
 
 
 
@@ -173,18 +176,546 @@ import 'dart:math';
 import '../beyond/foo/something.dart';
 `;
 
-        const sortedImports = `import 'dart:async';
+        const expectedSortedImports = `import 'dart:async';
 import 'dart:math';
-import package:flutter/material.dart;
-import package:gym_app/constants;
+import 'package:flutter/material.dart';
+import 'package:gym_app/constants';
 import '../beyond/foo/something.dart';
 import 'viewmodel.dart';`;
 
         const sortingResult = importSorter.sortImports(messyImports);
 
-        expect(sortingResult.firstRawImportIndex).toBe(0);
+        expect(sortingResult.firstRawImportIndex).toBe(1);
         expect(sortingResult.lastRawImportIndex).toBe(10);
-        expect(sortingResult.sortedImports).toBe(sortedImports);
+        expect(sortingResult.sortedImports).toBe(expectedSortedImports);
+    });
+
+    test('Sorts a basic list of consecutive imports', () => {
+        const messyImports = `import 'viewmodel.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:gym_app/constants';
+import 'dart:math';
+import '../beyond/foo/something.dart';
+`;
+
+        const expectedSortedImports = `import 'dart:async';
+import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:gym_app/constants';
+import '../beyond/foo/something.dart';
+import 'viewmodel.dart';`;
+
+        const sortingResult = importSorter.sortImports(messyImports);
+
+        expect(sortingResult.firstRawImportIndex).toBe(1);
+        expect(sortingResult.lastRawImportIndex).toBe(6);
+        expect(sortingResult.sortedImports).toBe(expectedSortedImports);
+
+        // Sorting again should not change anything
+        const sortingResult2 = importSorter.sortImports(sortingResult.sortedImports);
+
+        expect(sortingResult2.firstRawImportIndex).toBe(1);
+        expect(sortingResult2.lastRawImportIndex).toBe(6);
+
+        expect(sortingResult2.sortedImports).toBe(expectedSortedImports);
+    });
+
+    test('Sorts a list of consecutive imports, with line breaks', () => {
+        const messyImports = `import 'viewmodel.dart';
+import 'dart:async';
+
+
+
+
+
+
+
+
+
+
+import 'package:flutter/material.dart';
+import 'package:gym_app/constants';
+
+
+import 'dart:math';
+
+import '../beyond/foo/something.dart';
+`;
+
+        const expectedSortedImports = `import 'dart:async';
+import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:gym_app/constants';
+import '../beyond/foo/something.dart';
+import 'viewmodel.dart';`;
+
+        const sortingResult = importSorter.sortImports(messyImports);
+
+        expect(sortingResult.firstRawImportIndex).toBe(1);
+        expect(sortingResult.lastRawImportIndex).toBe(19);
+        expect(sortingResult.sortedImports).toBe(expectedSortedImports);
+
+        // Sorting again should not change anything (but last index is now 6 because line breaks were removed in the first sort)
+        const sortingResult2 = importSorter.sortImports(sortingResult.sortedImports);
+
+        expect(sortingResult2.firstRawImportIndex).toBe(1);
+        expect(sortingResult2.lastRawImportIndex).toBe(6);
+
+        expect(sortingResult2.sortedImports).toBe(expectedSortedImports);
+    });
+
+    test('Sorts a list of consecutive imports, with comments (especially the last import)', () => {
+        const messyImports = `// I was the first import
+import 'viewmodel.dart';
+// I was the second import
+import 'dart:async';
+// I was the third import
+import 'package:flutter/material.dart';
+// I was the fourth import
+import 'package:gym_app/constants';
+// I was the fifth import
+import 'dart:math';
+// I was the sixth import
+import '../beyond/foo/something.dart';
+`;
+
+        const expectedSortedImports = `// I was the second import
+import 'dart:async';
+// I was the fifth import
+import 'dart:math';
+// I was the third import
+import 'package:flutter/material.dart';
+// I was the fourth import
+import 'package:gym_app/constants';
+// I was the sixth import
+import '../beyond/foo/something.dart';
+// I was the first import
+import 'viewmodel.dart';`;
+
+        const sortingResult = importSorter.sortImports(messyImports);
+
+        expect(sortingResult.firstRawImportIndex).toBe(1);
+        expect(sortingResult.lastRawImportIndex).toBe(12);
+        expect(sortingResult.sortedImports).toBe(expectedSortedImports);
+
+        // Sorting again should not change anything
+        const sortingResult2 = importSorter.sortImports(sortingResult.sortedImports);
+
+        expect(sortingResult2.firstRawImportIndex).toBe(1);
+        expect(sortingResult2.lastRawImportIndex).toBe(12);
+
+        expect(sortingResult2.sortedImports).toBe(expectedSortedImports);
+    });
+
+    test('Sorts a list of imports, with comments and line breaks', () => {
+        const messyImports = `// I was the first import
+import 'viewmodel.dart';
+
+// I was the second import
+import 'dart:async';
+
+
+
+
+
+// I was the third import
+import 'package:flutter/material.dart';
+// I was the fourth import
+import 'package:gym_app/constants';
+
+// I was the fifth import
+import 'dart:math';
+
+// I was the sixth import
+import '../beyond/foo/something.dart';
+`;
+
+        const expectedSortedImports = `// I was the second import
+import 'dart:async';
+// I was the fifth import
+import 'dart:math';
+// I was the third import
+import 'package:flutter/material.dart';
+// I was the fourth import
+import 'package:gym_app/constants';
+// I was the sixth import
+import '../beyond/foo/something.dart';
+// I was the first import
+import 'viewmodel.dart';`;
+
+        const sortingResult = importSorter.sortImports(messyImports);
+
+        expect(sortingResult.firstRawImportIndex).toBe(1);
+        expect(sortingResult.lastRawImportIndex).toBe(20);
+        expect(sortingResult.sortedImports).toBe(expectedSortedImports);
+
+        // Sorting again should not change anything
+        const sortingResult2 = importSorter.sortImports(sortingResult.sortedImports);
+
+        expect(sortingResult2.firstRawImportIndex).toBe(1);
+        expect(sortingResult2.lastRawImportIndex).toBe(12);
+
+        expect(sortingResult2.sortedImports).toBe(expectedSortedImports);
+    });
+
+    test('Sorts a consecutive list of imports, with annotations', () => {
+        const messyImports = `@deprecated
+import 'viewmodel.dart';
+@deprecated
+import 'dart:async';
+@deprecated
+import 'package:flutter/material.dart';
+@deprecated
+import 'package:gym_app/constants';
+@deprecated
+import 'dart:math';
+@deprecated
+import '../beyond/foo/something.dart';
+`;
+
+        const expectedSortedImports = `@deprecated
+import 'dart:async';
+@deprecated
+import 'dart:math';
+@deprecated
+import 'package:flutter/material.dart';
+@deprecated
+import 'package:gym_app/constants';
+@deprecated
+import '../beyond/foo/something.dart';
+@deprecated
+import 'viewmodel.dart';`;
+
+        const sortingResult = importSorter.sortImports(messyImports);
+
+        expect(sortingResult.firstRawImportIndex).toBe(1);
+        expect(sortingResult.lastRawImportIndex).toBe(12);
+        expect(sortingResult.sortedImports).toBe(expectedSortedImports);
+
+        // Sorting again should not change anything
+        const sortingResult2 = importSorter.sortImports(sortingResult.sortedImports);
+
+        expect(sortingResult2.firstRawImportIndex).toBe(1);
+        expect(sortingResult2.lastRawImportIndex).toBe(12);
+
+        expect(sortingResult2.sortedImports).toBe(expectedSortedImports);
+    });
+
+    test('Sorts a list of imports, with annotations and line breaks', () => {
+        const messyImports = `@deprecated
+import 'viewmodel.dart';
+
+
+@deprecated
+import 'dart:async';
+
+@deprecated
+import 'package:flutter/material.dart';
+@deprecated
+import 'package:gym_app/constants';
+
+
+@deprecated
+import 'dart:math';
+
+@deprecated
+import '../beyond/foo/something.dart';
+    `;
+
+        const expectedSortedImports = `@deprecated
+import 'dart:async';
+@deprecated
+import 'dart:math';
+@deprecated
+import 'package:flutter/material.dart';
+@deprecated
+import 'package:gym_app/constants';
+@deprecated
+import '../beyond/foo/something.dart';
+@deprecated
+import 'viewmodel.dart';`;
+
+        const sortingResult = importSorter.sortImports(messyImports);
+
+        expect(sortingResult.firstRawImportIndex).toBe(1);
+        expect(sortingResult.lastRawImportIndex).toBe(18);
+        expect(sortingResult.sortedImports).toBe(expectedSortedImports);
+
+        // Sorting again should not change anything
+        const sortingResult2 = importSorter.sortImports(sortingResult.sortedImports);
+
+        expect(sortingResult2.firstRawImportIndex).toBe(1);
+        expect(sortingResult2.lastRawImportIndex).toBe(12);
+
+        expect(sortingResult2.sortedImports).toBe(expectedSortedImports);
+    });
+
+    test('Sorts a list of imports, with comments and annotations', () => {
+        const messyImports = `// I was the first import
+@deprecated
+import 'viewmodel.dart';
+// I was the second import
+@deprecated
+import 'dart:async';
+// I was the third import
+import 'package:flutter/material.dart';
+// I was the fourth import
+@deprecated
+import 'package:gym_app/constants';
+// I was the fifth import
+import 'dart:math';
+// I was the sixth import
+@deprecated
+import '../beyond/foo/something.dart';
+`;
+
+        const expectedSortedImports = `// I was the second import
+@deprecated
+import 'dart:async';
+// I was the fifth import
+import 'dart:math';
+// I was the third import
+import 'package:flutter/material.dart';
+// I was the fourth import
+@deprecated
+import 'package:gym_app/constants';
+// I was the sixth import
+@deprecated
+import '../beyond/foo/something.dart';
+// I was the first import
+@deprecated
+import 'viewmodel.dart';`;
+
+        const sortingResult = importSorter.sortImports(messyImports);
+
+        expect(sortingResult.firstRawImportIndex).toBe(1);
+        expect(sortingResult.lastRawImportIndex).toBe(16);
+        expect(sortingResult.sortedImports).toBe(expectedSortedImports);
+
+        // Sorting again should not change anything
+        const sortingResult2 = importSorter.sortImports(sortingResult.sortedImports);
+
+        expect(sortingResult2.firstRawImportIndex).toBe(1);
+        expect(sortingResult2.lastRawImportIndex).toBe(16);
+
+        expect(sortingResult2.sortedImports).toBe(expectedSortedImports);
+    });
+
+    test('Sorts a list of imports, with comments, annotations, and line breaks', () => {
+        const messyImports = `// I was the first import
+@deprecated
+import 'viewmodel.dart';
+
+
+// I was the second import
+@deprecated
+import 'dart:async';
+// I was the third import
+import 'package:flutter/material.dart';
+
+
+
+// I was the fourth import
+@deprecated
+import 'package:gym_app/constants';
+
+// I was the fifth import
+import 'dart:math';
+// I was the sixth import
+@deprecated
+import '../beyond/foo/something.dart';
+`;
+
+        const expectedSortedImports = `// I was the second import
+@deprecated
+import 'dart:async';
+// I was the fifth import
+import 'dart:math';
+// I was the third import
+import 'package:flutter/material.dart';
+// I was the fourth import
+@deprecated
+import 'package:gym_app/constants';
+// I was the sixth import
+@deprecated
+import '../beyond/foo/something.dart';
+// I was the first import
+@deprecated
+import 'viewmodel.dart';`;
+
+        const sortingResult = importSorter.sortImports(messyImports);
+
+        expect(sortingResult.firstRawImportIndex).toBe(1);
+        expect(sortingResult.lastRawImportIndex).toBe(22);
+        expect(sortingResult.sortedImports).toBe(expectedSortedImports);
+
+        // Sorting again should not change anything
+        const sortingResult2 = importSorter.sortImports(sortingResult.sortedImports);
+
+        expect(sortingResult2.firstRawImportIndex).toBe(1);
+        expect(sortingResult2.lastRawImportIndex).toBe(16);
+
+        expect(sortingResult2.sortedImports).toBe(expectedSortedImports);
+    });
+
+    test('Sorts a list of multiline conditional imports with comments, annotations, and line breaks', () => {
+        const messyImports = `// I was the first import
+@deprecated
+import 'viewmodel.dart';
+
+
+// I was the second import
+@deprecated
+import 'dart:async';
+// I was the third import
+import 'package:flutter/material.dart';
+
+// This is a multiline conditional import
+@deprecated
+import 'package:gym_app/constants'
+    if (dart.library.io) 'package:gym_app/constants_io'
+    if (dart.library.html) 'package:gym_app/constants_web';
+// This is also a multiline conditional import
+@deprecated
+import 'package:gym_app/various'
+    if (dart.library.io) 'package:gym_app/various_io'
+    if (dart.library.html) 'package:gym_app/various_web';
+
+// I was the fourth import
+@deprecated
+import 'package:gym_app/constants';
+
+// I was the fifth import
+import 'dart:math';
+// I was the sixth import
+@deprecated
+import '../beyond/foo/something.dart';
+`;
+
+        const expectedSortedImports = `// I was the second import
+@deprecated
+import 'dart:async';
+// I was the fifth import
+import 'dart:math';
+// I was the third import
+import 'package:flutter/material.dart';
+// This is a multiline conditional import
+@deprecated
+import 'package:gym_app/constants'
+    if (dart.library.io) 'package:gym_app/constants_io'
+    if (dart.library.html) 'package:gym_app/constants_web';
+// I was the fourth import
+@deprecated
+import 'package:gym_app/constants';
+// This is also a multiline conditional import
+@deprecated
+import 'package:gym_app/various'
+    if (dart.library.io) 'package:gym_app/various_io'
+    if (dart.library.html) 'package:gym_app/various_web';
+// I was the sixth import
+@deprecated
+import '../beyond/foo/something.dart';
+// I was the first import
+@deprecated
+import 'viewmodel.dart';`;
+
+        const sortingResult = importSorter.sortImports(messyImports);
+
+        expect(sortingResult.firstRawImportIndex).toBe(1);
+        expect(sortingResult.lastRawImportIndex).toBe(31);
+        expect(sortingResult.sortedImports).toBe(expectedSortedImports);
+
+        // Sorting again should not change anything
+        const sortingResult2 = importSorter.sortImports(sortingResult.sortedImports);
+
+        expect(sortingResult2.firstRawImportIndex).toBe(1);
+        expect(sortingResult2.lastRawImportIndex).toBe(26);
+
+        expect(sortingResult2.sortedImports).toBe(expectedSortedImports);
+    });
+
+    test('Sorts a list of multiline conditional imports with comments, annotations, and line breaks, with emptyLinesBetweenGroups enabled', () => {
+        settings = { ...settings, leaveEmptyLinesBetweenImports: true };
+        importSorter = new ImportSorter(settings);
+
+        const messyImports = `// I was the first import
+@deprecated
+import 'viewmodel.dart';
+
+
+// I was the second import
+@deprecated
+import 'dart:async';
+// I was the third import
+import 'package:flutter/material.dart';
+
+// This is a multiline conditional import
+@deprecated
+import 'package:gym_app/constants'
+    if (dart.library.io) 'package:gym_app/constants_io'
+    if (dart.library.html) 'package:gym_app/constants_web';
+// This is also a multiline conditional import
+@deprecated
+import 'package:gym_app/various'
+    if (dart.library.io) 'package:gym_app/various_io'
+    if (dart.library.html) 'package:gym_app/various_web';
+
+// I was the fourth import
+@deprecated
+import 'package:gym_app/constants';
+
+// I was the fifth import
+import 'dart:math';
+// I was the sixth import
+@deprecated
+import '../beyond/foo/something.dart';
+`;
+
+        const expectedSortedImports = `// I was the second import
+@deprecated
+import 'dart:async';
+// I was the fifth import
+import 'dart:math';
+
+// I was the third import
+import 'package:flutter/material.dart';
+
+// This is a multiline conditional import
+@deprecated
+import 'package:gym_app/constants'
+    if (dart.library.io) 'package:gym_app/constants_io'
+    if (dart.library.html) 'package:gym_app/constants_web';
+// I was the fourth import
+@deprecated
+import 'package:gym_app/constants';
+// This is also a multiline conditional import
+@deprecated
+import 'package:gym_app/various'
+    if (dart.library.io) 'package:gym_app/various_io'
+    if (dart.library.html) 'package:gym_app/various_web';
+
+// I was the sixth import
+@deprecated
+import '../beyond/foo/something.dart';
+
+// I was the first import
+@deprecated
+import 'viewmodel.dart';`;
+
+        const sortingResult = importSorter.sortImports(messyImports);
+
+        expect(sortingResult.firstRawImportIndex).toBe(1);
+        expect(sortingResult.lastRawImportIndex).toBe(31);
+        expect(sortingResult.sortedImports).toBe(expectedSortedImports);
+
+        // Sorting again should not change anything
+        const sortingResult2 = importSorter.sortImports(sortingResult.sortedImports);
+
+        expect(sortingResult2.firstRawImportIndex).toBe(1);
+        expect(sortingResult2.lastRawImportIndex).toBe(30);
+
+        expect(sortingResult2.sortedImports).toBe(expectedSortedImports);
     });
 
     test('Return no result when there are no imports to sort', () => {

@@ -1,5 +1,7 @@
 import { inject, injectable } from 'tsyringe';
 
+import { ImportStatement } from '../types/import-statement.model';
+
 import { IExtensionSettings } from '../extension-settings/extension-settings.interface';
 import { IImportSorter, SortingResult } from './import-sorter.interface';
 
@@ -14,7 +16,7 @@ export class ImportSorter implements IImportSorter {
     constructor(@inject('IExtensionSettings') public settings: IExtensionSettings) {}
 
     sortImports(rawDocumentBody: string): SortingResult {
-        const strippedImports = ImportUtils.extractFormattedImports(rawDocumentBody);
+        const strippedImports = ImportUtils.findAllImports(rawDocumentBody);
 
         if (strippedImports.length === 0) {
             return { sortedImports: '', firstRawImportIndex: -1, lastRawImportIndex: -1 }; // nothing to sort
@@ -30,19 +32,19 @@ export class ImportSorter implements IImportSorter {
 
         return {
             sortedImports: this.flattenImportGroups(nonEmptyGroups),
-            firstRawImportIndex: ImportUtils.indexOfFirstImport(rawDocumentBody.split('\n')),
-            lastRawImportIndex: ImportUtils.indexOfLastImport(rawDocumentBody.split('\n')),
+            firstRawImportIndex: ImportUtils.lineNumberOfFirstImport(strippedImports),
+            lastRawImportIndex: ImportUtils.lineNumberOfLastImport(strippedImports),
         };
     }
 
-    private groupImports(strippedImports: string[]): StatementGroup[] {
+    private groupImports(strippedImports: ImportStatement[]): StatementGroup[] {
         let statements = strippedImports.slice();
 
         const groups: StatementGroup[] = [];
 
         this.settings.sortingRules.forEach((preference) => {
             const matchingStatements = statements.filter((statement) =>
-                preference.regex.test(ImportUtils.getImportPath(statement))
+                preference.regex.test(statement.path)
             );
 
             groups.push({
@@ -55,7 +57,7 @@ export class ImportSorter implements IImportSorter {
             statements = statements.filter((statement) => !matchingStatements.includes(statement));
         });
 
-        // if there are imports that don't match anything, throw them at the end
+        // if there are remaining imports that don't match anything, throw them at the end
         if (statements.length > 0) {
             groups.push({
                 groupRegex: /.*/gm,
@@ -72,7 +74,7 @@ export class ImportSorter implements IImportSorter {
 
         const concattedGroups = groups
             .map((group) => {
-                return group.imports.join('\n');
+                return group.imports.map((statement) => statement.rawBody).join('\n');
             })
             .join(this.settings.leaveEmptyLinesBetweenImports ? '\n\n' : '\n');
 
