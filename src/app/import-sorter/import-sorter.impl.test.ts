@@ -265,7 +265,6 @@ import 'viewmodel.dart';`;
         expect(sortingResult2.sortedImports).toBe(expectedSortedImports);
     });
 
-    // FIXME
     test('Sorts a list of consecutive imports, with comments (especially the last import)', () => {
         const messyImports = `// I was the first import
 import 'viewmodel.dart';
@@ -294,8 +293,99 @@ import '../beyond/foo/something.dart';
 // I was the first import
 import 'viewmodel.dart';`;
 
-        console.log(messyImports);
-        console.log(expectedSortedImports);
+        const sortingResult = importSorter.sortImports(messyImports);
+
+        expect(sortingResult.firstRawImportIndex).toBe(1);
+        expect(sortingResult.lastRawImportIndex).toBe(12);
+        expect(sortingResult.sortedImports).toBe(expectedSortedImports);
+
+        // Sorting again should not change anything
+        const sortingResult2 = importSorter.sortImports(sortingResult.sortedImports);
+
+        expect(sortingResult2.firstRawImportIndex).toBe(1);
+        expect(sortingResult2.lastRawImportIndex).toBe(12);
+
+        expect(sortingResult2.sortedImports).toBe(expectedSortedImports);
+    });
+
+    test('Sorts a list of imports, with comments and line breaks', () => {
+        const messyImports = `// I was the first import
+import 'viewmodel.dart';
+
+// I was the second import
+import 'dart:async';
+
+
+
+
+
+// I was the third import
+import 'package:flutter/material.dart';
+// I was the fourth import
+import 'package:gym_app/constants';
+
+// I was the fifth import
+import 'dart:math';
+
+// I was the sixth import
+import '../beyond/foo/something.dart';
+`;
+
+        const expectedSortedImports = `// I was the second import
+import 'dart:async';
+// I was the fifth import
+import 'dart:math';
+// I was the third import
+import 'package:flutter/material.dart';
+// I was the fourth import
+import 'package:gym_app/constants';
+// I was the sixth import
+import '../beyond/foo/something.dart';
+// I was the first import
+import 'viewmodel.dart';`;
+
+        const sortingResult = importSorter.sortImports(messyImports);
+
+        expect(sortingResult.firstRawImportIndex).toBe(1);
+        expect(sortingResult.lastRawImportIndex).toBe(20);
+        expect(sortingResult.sortedImports).toBe(expectedSortedImports);
+
+        // Sorting again should not change anything
+        const sortingResult2 = importSorter.sortImports(sortingResult.sortedImports);
+
+        expect(sortingResult2.firstRawImportIndex).toBe(1);
+        expect(sortingResult2.lastRawImportIndex).toBe(12);
+
+        expect(sortingResult2.sortedImports).toBe(expectedSortedImports);
+    });
+
+    test('Sorts a consecutive list of imports, with annotations', () => {
+        const messyImports = `@deprecated
+import 'viewmodel.dart';
+@deprecated
+import 'dart:async';
+@deprecated
+import 'package:flutter/material.dart';
+@deprecated
+import 'package:gym_app/constants';
+@deprecated
+import 'dart:math';
+@deprecated
+import '../beyond/foo/something.dart';
+`;
+
+        const expectedSortedImports = `@deprecated
+import 'dart:async';
+@deprecated
+import 'dart:math';
+@deprecated
+import 'package:flutter/material.dart';
+@deprecated
+import 'package:gym_app/constants';
+@deprecated
+import '../beyond/foo/something.dart';
+@deprecated
+import 'viewmodel.dart';`;
 
         const sortingResult = importSorter.sortImports(messyImports);
 
@@ -312,20 +402,162 @@ import 'viewmodel.dart';`;
         expect(sortingResult2.sortedImports).toBe(expectedSortedImports);
     });
 
-    // TODO
-    test('Sorts a list of imports, with comments and line breaks', () => {});
+    test('Sorts a list of imports, with annotations and line breaks', () => {
+        const messyImports = `@deprecated
+import 'viewmodel.dart';
 
-    // TODO
-    test('Sorts a consecutive list of imports, with annotations', () => {});
 
-    // TODO
-    test('Sorts a list of imports, with annotations and line breaks', () => {});
+@deprecated
+import 'dart:async';
 
-    // TODO
-    test('Sorts a list of imports, with comments and annotations', () => {});
+@deprecated
+import 'package:flutter/material.dart';
+@deprecated
+import 'package:gym_app/constants';
 
-    // TODO
-    test('Sorts a list of imports, with comments, annotations, and line breaks', () => {});
+
+@deprecated
+import 'dart:math';
+
+@deprecated
+import '../beyond/foo/something.dart';
+    `;
+
+        const expectedSortedImports = `@deprecated
+import 'dart:async';
+@deprecated
+import 'dart:math';
+@deprecated
+import 'package:flutter/material.dart';
+@deprecated
+import 'package:gym_app/constants';
+@deprecated
+import '../beyond/foo/something.dart';
+@deprecated
+import 'viewmodel.dart';`;
+
+        const sortingResult = importSorter.sortImports(messyImports);
+
+        expect(sortingResult.firstRawImportIndex).toBe(1);
+        expect(sortingResult.lastRawImportIndex).toBe(18);
+        expect(sortingResult.sortedImports).toBe(expectedSortedImports);
+
+        // Sorting again should not change anything
+        const sortingResult2 = importSorter.sortImports(sortingResult.sortedImports);
+
+        expect(sortingResult2.firstRawImportIndex).toBe(1);
+        expect(sortingResult2.lastRawImportIndex).toBe(12);
+
+        expect(sortingResult2.sortedImports).toBe(expectedSortedImports);
+    });
+
+    test('Sorts a list of imports, with comments and annotations', () => {
+        const messyImports = `// I was the first import
+@deprecated
+import 'viewmodel.dart';
+// I was the second import
+@deprecated
+import 'dart:async';
+// I was the third import
+import 'package:flutter/material.dart';
+// I was the fourth import
+@deprecated
+import 'package:gym_app/constants';
+// I was the fifth import
+import 'dart:math';
+// I was the sixth import
+@deprecated
+import '../beyond/foo/something.dart';
+`;
+
+        const expectedSortedImports = `// I was the second import
+@deprecated
+import 'dart:async';
+// I was the fifth import
+import 'dart:math';
+// I was the third import
+import 'package:flutter/material.dart';
+// I was the fourth import
+@deprecated
+import 'package:gym_app/constants';
+// I was the sixth import
+@deprecated
+import '../beyond/foo/something.dart';
+// I was the first import
+@deprecated
+import 'viewmodel.dart';`;
+
+        const sortingResult = importSorter.sortImports(messyImports);
+
+        expect(sortingResult.firstRawImportIndex).toBe(1);
+        expect(sortingResult.lastRawImportIndex).toBe(16);
+        expect(sortingResult.sortedImports).toBe(expectedSortedImports);
+
+        // Sorting again should not change anything
+        const sortingResult2 = importSorter.sortImports(sortingResult.sortedImports);
+
+        expect(sortingResult2.firstRawImportIndex).toBe(1);
+        expect(sortingResult2.lastRawImportIndex).toBe(16);
+
+        expect(sortingResult2.sortedImports).toBe(expectedSortedImports);
+    });
+
+    test('Sorts a list of imports, with comments, annotations, and line breaks', () => {
+        const messyImports = `// I was the first import
+@deprecated
+import 'viewmodel.dart';
+
+
+// I was the second import
+@deprecated
+import 'dart:async';
+// I was the third import
+import 'package:flutter/material.dart';
+
+
+
+// I was the fourth import
+@deprecated
+import 'package:gym_app/constants';
+
+// I was the fifth import
+import 'dart:math';
+// I was the sixth import
+@deprecated
+import '../beyond/foo/something.dart';
+`;
+
+        const expectedSortedImports = `// I was the second import
+@deprecated
+import 'dart:async';
+// I was the fifth import
+import 'dart:math';
+// I was the third import
+import 'package:flutter/material.dart';
+// I was the fourth import
+@deprecated
+import 'package:gym_app/constants';
+// I was the sixth import
+@deprecated
+import '../beyond/foo/something.dart';
+// I was the first import
+@deprecated
+import 'viewmodel.dart';`;
+
+        const sortingResult = importSorter.sortImports(messyImports);
+
+        expect(sortingResult.firstRawImportIndex).toBe(1);
+        expect(sortingResult.lastRawImportIndex).toBe(22);
+        expect(sortingResult.sortedImports).toBe(expectedSortedImports);
+
+        // Sorting again should not change anything
+        const sortingResult2 = importSorter.sortImports(sortingResult.sortedImports);
+
+        expect(sortingResult2.firstRawImportIndex).toBe(1);
+        expect(sortingResult2.lastRawImportIndex).toBe(16);
+
+        expect(sortingResult2.sortedImports).toBe(expectedSortedImports);
+    });
 
     test('Return no result when there are no imports to sort', () => {
         const sortingResult = importSorter.sortImports('');
