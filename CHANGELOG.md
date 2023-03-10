@@ -4,44 +4,64 @@ All notable changes to the "dartimportsorter" extension will be documented in th
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.3.0] - 10th March (2023-03-10)
+
+### Added:
+
+-   Support for comments and annotations
+-   Support for conditional imports
+
 ## [0.2.10] - 12th August (2022-08-12)
+
 ### Bugfix:
+
 -   Remove newline chars from parsed project name in pubspec.yaml
 
 ## [0.2.9] - 1st July (2022-07-01)
+
 ### Hotfix:
+
 -   Switched extension to use platform-specific paths
 
 ## [0.2.8] - 1st July (2022-07-01)
+
 ### Added:
+
 -   Ability to automatically detect current project name from pubspec.yaml file
 
 ## [0.2.7] - 19th June (2022-06-19)
+
 ### Added:
+
 -   Support for double quotes in import statements
 -   'Buy me a coffee' button. Any support is appreciated.
 
-
 ## [0.2.6] - 12th June (2022-06-12)
+
 ### Added:
--   Improved flutter package detection. packages starting with 'flutter_' are classified different from official flutter packages
+
+-   Improved flutter package detection. packages starting with 'flutter\_' are classified different from official flutter packages
 
 ## [0.2.3] - 26th May (2022-05-26)
 
 ### Added
+
 -   CD part of CI/CD to continously publish extension
 
 ## [0.2.2] - 26th May (2022-05-26)
-- This version is the result of a successful CI/CD experiment
+
+-   This version is the result of a successful CI/CD experiment
 
 ## [0.2.1] - 26th May (2022-05-26)
 
 ### Added:
+
 -   Unit tests for major parts of extension
 -   Dependency injection
 
 ### Fixed:
-- Messy code. Spread code pools into different coherent files / modules
+
+-   Messy code. Spread code pools into different coherent files / modules
 
 ## [0.2.0] - 5th May (2022-05-05)
 
