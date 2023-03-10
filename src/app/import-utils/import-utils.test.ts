@@ -291,7 +291,7 @@ import 'foo.dart'
     if (dart.library.html) 'src/hw_html.dart';
 `;
 
-        const simplifiedImport = ImportUtils.simplifyMultilineImport(raw);
+        const simplifiedImport = ImportUtils.simplifyImport(raw);
         const expected = `import 'foo.dart' if (dart.library.io) 'src/hw_io.dart' if (dart.library.html) 'src/hw_html.dart';`;
 
         expect(simplifiedImport).toBe(expected);
@@ -308,8 +308,23 @@ import 'foo.dart'
     if (dart.library.html) 'src/hw_html.dart';
 `;
 
-        const simplifiedImport = ImportUtils.simplifyMultilineImport(raw);
+        const simplifiedImport = ImportUtils.simplifyImport(raw);
         const expected = `import 'foo.dart' if (dart.library.io) 'src/hw_io.dart' if (dart.library.html) 'src/hw_html.dart';`;
+
+        expect(simplifiedImport).toBe(expected);
+    });
+
+    test('should simplify a multiline import statement with comments and annotations into a single line', () => {
+        const raw = `
+// This is also a multiline conditional import
+@deprecated
+import 'package:gym_app/various'
+    if (dart.library.io) 'package:gym_app/various_io'
+    if (dart.library.html) 'package:gym_app/various_web';
+`;
+
+        const simplifiedImport = ImportUtils.simplifyImport(raw);
+        const expected = `import 'package:gym_app/various' if (dart.library.io) 'package:gym_app/various_io' if (dart.library.html) 'package:gym_app/various_web';`;
 
         expect(simplifiedImport).toBe(expected);
     });

@@ -36,8 +36,9 @@ export class ImportUtils {
                     currentImport.rawBody += '\n' + line;
 
                     // incrementing only when not first import, because first
-                    // import's first line number is important (compared to the
-                    // last import, in which only the last line number matters)
+                    // import's first line number is important when replacing
+                    // imports (compared to the last import, in which only the
+                    // last line number matters)
                     if (imports.length > 0) {
                         currentImport.lineNumber += 1;
                     }
@@ -50,14 +51,26 @@ export class ImportUtils {
 
             // line is not empty, but not an import
             if (line.trim() !== '') {
+                // 1. if current import is a valid import, add it to the list
+                if (
+                    currentImport &&
+                    this.isImportStatement(this.simplifyImport(currentImport.rawBody))
+                ) {
+                    imports.push(currentImport);
+                    currentImport = undefined;
+                }
+
+                // 2. otherwise, initialize a new import if it doesn't exist
                 if (!currentImport) {
                     currentImport = new ImportStatement(line, lineNumber);
                 } else {
+                    // 2.1 and append the line to the current import
                     currentImport.rawBody += '\n' + line;
 
                     // incrementing only when not first import, because first
-                    // import's first line number is important (compared to the
-                    // last import, in which only the last line number matters)
+                    // import's first line number is important when replacing
+                    // imports (compared to the last import, in which only the
+                    // last line number matters)
                     if (imports.length > 0) {
                         currentImport.lineNumber += 1;
                     }
@@ -71,7 +84,7 @@ export class ImportUtils {
                 // if current import is a valid import, add it to the list
                 if (
                     currentImport &&
-                    this.isImportStatement(this.simplifyMultilineImport(currentImport.rawBody))
+                    this.isImportStatement(this.simplifyImport(currentImport.rawBody))
                 ) {
                     imports.push(currentImport);
                     currentImport = undefined;
@@ -118,19 +131,22 @@ export class ImportUtils {
         return groups.filter((group) => group.imports.length > 0);
     }
 
-    static simplifyMultilineImport(statement: string): string {
+    static simplifyImport(statement: string): string {
         let formattedStatement = statement.trim();
 
-        // first remove comments
+        // remove comments
         formattedStatement = formattedStatement.replace(/\/\/.*$/gm, '');
 
-        // then remove tabs
+        // remove annotations
+        formattedStatement = formattedStatement.replace(/@.*$/gm, '');
+
+        // remove tabs
         formattedStatement = formattedStatement.replace(/\t/g, '');
 
-        // then remove newlines
+        // remove newlines
         formattedStatement = formattedStatement.replace(/\n/g, '');
 
-        // then remove multiple spaces
+        // remove multiple spaces
         formattedStatement = formattedStatement.replace(/\s{2,}/g, ' ');
 
         return formattedStatement;
