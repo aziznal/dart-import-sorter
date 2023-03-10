@@ -9,8 +9,6 @@ This is a VS Code extension that sorts your dart / flutter imports with a single
 <p align="center">
     <a href="https://github.com/aziznal/dart-import-sorter/blob/main/LICENSE"><img src="https://img.shields.io/github/license/aziznal/dart-import-sorter" alt="Licence"></a>
     <a href="https://GitHub.com/aziznal/dart-import-sorter/releases/"><img src="https://img.shields.io/github/release/aziznal/dart-import-sorter" alt="Release"></a>
-    <a href="https://marketplace.visualstudio.com/items?itemName=aziznal.dart-import-sorter"><img src="https://vsmarketplacebadge.apphb.com/installs-short/aziznal.dart-import-sorter.svg?style=flat" alt="Visual Studio Marketplace Installs"></a>
-    <a href="https://marketplace.visualstudio.com/items?itemName=aziznal.dart-import-sorter"><img src="https://vsmarketplacebadge.apphb.com/version/aziznal.dart-import-sorter.svg" alt="Visual Studio Marketplace"></a>
     <a href="https://github.com/aziznal/dart-import-sorter/actions/workflows/test.yaml"><img src="https://github.com/aziznal/dart-import-sorter/actions/workflows/test.yaml/badge.svg"></a>
 </p>
 
@@ -144,14 +142,15 @@ If you don't provide custom rules in settings.json, then the extension will use 
 See [Changelog](./CHANGELOG.md)
 
 ## Contribution
+
 Make a pull request with your changes to be merged with the `develop` branch as it's what I use for staging. Reference an issue if it's available and add me (@aziznal) as a reviewer. Make sure unit tests pass and we'll get your PR sorted in no time! Oh, and please add unit tests for any new features that may require them.
 
-If you have any questions, contact me at aziznal.dev@gmail.com
----
+## If you have any questions, contact me at aziznal.dev@gmail.com
 
 ### Note
 
 Configuration inspired by [this extension (typescript import sorter)](https://github.com/SoominHan/import-sorter)
 
 ---
+
 <a href="https://www.buymeacoffee.com/aziznal" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
