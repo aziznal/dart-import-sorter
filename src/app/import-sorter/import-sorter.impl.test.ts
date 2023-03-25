@@ -725,4 +725,31 @@ import 'viewmodel.dart';`;
         expect(sortingResult.lastRawImportIndex).toBe(-1);
         expect(sortingResult.sortedImports).toBe('');
     });
+
+    test('Sorts a list of imports with a library statement at the beginning', () => {
+        const messyImports = `library solid_repositories;
+
+import 'package:flutter/foundation.dart';
+        
+part 'i_authentication_repository.dart';`;
+
+        const expectedSortedImports = `library solid_repositories;
+
+import 'package:flutter/foundation.dart';
+        
+part 'i_authentication_repository.dart';`;
+
+        const sortingResult = importSorter.sortImports(messyImports);
+
+        expect(sortingResult.firstRawImportIndex).toBe(2);
+        expect(sortingResult.lastRawImportIndex).toBe(3);
+        expect(sortingResult.sortedImports).toBe(expectedSortedImports);
+
+        // Sorting again should not change anything
+        const sortingResult2 = importSorter.sortImports(sortingResult.sortedImports);
+
+        expect(sortingResult2.firstRawImportIndex).toBe(2);
+        expect(sortingResult2.lastRawImportIndex).toBe(3);
+        expect(sortingResult2.sortedImports).toBe(expectedSortedImports);
+    });
 });
