@@ -19,8 +19,13 @@ export class ImportUtils {
         return RegExp(/^import\s+[\s\S]*?;\s*$/, 'gm').test(statement);
     }
 
+    static isPotentialImportStatement(statement: string): boolean {
+        return RegExp(/^import\s+[\s\S]*?\s*$/, 'gm').test(statement);
+    }
+
     static findAllImports(document: string): ImportStatement[] {
-        const lines = document.split('\n');
+        // add empty line at the end to make sure last import is detected
+        const lines = document.split('\n').concat(['']);
 
         let currentImport: ImportStatement | undefined;
         const imports: ImportStatement[] = [];
@@ -88,6 +93,24 @@ export class ImportUtils {
                 ) {
                     imports.push(currentImport);
                     currentImport = undefined;
+                    return;
+                }
+
+                // if current import is potentially a valid import, continue
+                if (
+                    currentImport &&
+                    this.isPotentialImportStatement(this.simplifyImport(currentImport.rawBody))
+                ) {
+                    currentImport.lineNumber += 1;
+                    return;
+                }
+
+                if (
+                    currentImport &&
+                    !this.isImportStatement(this.simplifyImport(currentImport.rawBody))
+                ) {
+                    currentImport = undefined;
+                    return;
                 }
             }
         });
