@@ -129,7 +129,7 @@ const DEFAULT_SETTINGS: IExtensionSettings = {
     projectName: '',
 };
 
-describe('', () => {
+describe('Import Sorter', () => {
     let importSorter: IImportSorter;
     let settings: IExtensionSettings;
 
@@ -718,11 +718,111 @@ import 'viewmodel.dart';`;
         expect(sortingResult2.sortedImports).toBe(expectedSortedImports);
     });
 
-    test('Return no result when there are no imports to sort', () => {
+    test('Sorts a list of imports, starting with an empty line followed by a basic import with a comment and a multiline conditional import', () => {
+        const messyImports = `// this is a comment
+import 'something.dart';
+
+// this is a conditional import
+import 'dart:math'
+
+
+    // we import this sometimes
+    if (dart.library.html) 'dart:html'
+
+
+
+    // but other times we import this
+    if (dart.library.io) 'dart:io';`;
+
+        const expectedSortedImports = `// this is a conditional import
+import 'dart:math'
+    // we import this sometimes
+    if (dart.library.html) 'dart:html'
+    // but other times we import this
+    if (dart.library.io) 'dart:io';
+// this is a comment
+import 'something.dart';`;
+
+        const sortingResult = importSorter.sortImports(messyImports);
+        expect(sortingResult.firstRawImportIndex).toBe(1);
+        expect(sortingResult.lastRawImportIndex).toBe(14);
+        expect(sortingResult.sortedImports).toBe(expectedSortedImports);
+
+        // Sorting again should not change anything
+        const sortingResult2 = importSorter.sortImports(sortingResult.sortedImports);
+        expect(sortingResult2.firstRawImportIndex).toBe(1);
+        expect(sortingResult2.lastRawImportIndex).toBe(8);
+        expect(sortingResult2.sortedImports).toBe(expectedSortedImports);
+    });
+
+    test('Returns no result when there are no imports to sort', () => {
         const sortingResult = importSorter.sortImports('');
 
         expect(sortingResult.firstRawImportIndex).toBe(-1);
         expect(sortingResult.lastRawImportIndex).toBe(-1);
         expect(sortingResult.sortedImports).toBe('');
+    });
+
+    test('Does not sort when there is a single import statement', () => {
+        const messyImports = `// This is a comment
+// It's multiline
+
+import 'package:flutter/foundation.dart';
+        
+part 'i_authentication_repository.dart';`;
+
+        const expectedSortedImports = ``;
+
+        const sortingResult = importSorter.sortImports(messyImports);
+
+        expect(sortingResult.firstRawImportIndex).toBe(-1);
+        expect(sortingResult.lastRawImportIndex).toBe(-1);
+        expect(sortingResult.sortedImports).toBe(expectedSortedImports);
+
+        // Sorting again should not change anything
+        const sortingResult2 = importSorter.sortImports(sortingResult.sortedImports);
+
+        expect(sortingResult2.firstRawImportIndex).toBe(-1);
+        expect(sortingResult2.lastRawImportIndex).toBe(-1);
+        expect(sortingResult2.sortedImports).toBe(expectedSortedImports);
+    });
+
+    test('Does not sort when there is only a single import statement', () => {
+        const messyImports = `import 'package:flutter/foundation.dart';`;
+
+        const expectedSortedImports = ``;
+
+        const sortingResult = importSorter.sortImports(messyImports);
+
+        expect(sortingResult.firstRawImportIndex).toBe(-1);
+        expect(sortingResult.lastRawImportIndex).toBe(-1);
+        expect(sortingResult.sortedImports).toBe(expectedSortedImports);
+
+        // Sorting again should not change anything
+        const sortingResult2 = importSorter.sortImports(sortingResult.sortedImports);
+
+        expect(sortingResult2.firstRawImportIndex).toBe(-1);
+        expect(sortingResult2.lastRawImportIndex).toBe(-1);
+        expect(sortingResult2.sortedImports).toBe(expectedSortedImports);
+    });
+
+    test('Does not sort when there is a single import with a comment', () => {
+        const messyImports = `// This is a comment
+import 'package:flutter/foundation.dart';`;
+
+        const expectedSortedImports = ``;
+
+        const sortingResult = importSorter.sortImports(messyImports);
+
+        expect(sortingResult.firstRawImportIndex).toBe(-1);
+        expect(sortingResult.lastRawImportIndex).toBe(-1);
+        expect(sortingResult.sortedImports).toBe(expectedSortedImports);
+
+        // Sorting again should not change anything
+        const sortingResult2 = importSorter.sortImports(sortingResult.sortedImports);
+
+        expect(sortingResult2.firstRawImportIndex).toBe(-1);
+        expect(sortingResult2.lastRawImportIndex).toBe(-1);
+        expect(sortingResult2.sortedImports).toBe(expectedSortedImports);
     });
 });
