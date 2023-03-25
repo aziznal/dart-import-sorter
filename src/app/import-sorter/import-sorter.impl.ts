@@ -18,7 +18,8 @@ export class ImportSorter implements IImportSorter {
     sortImports(rawDocumentBody: string): SortingResult {
         const strippedImports = ImportUtils.findAllImports(rawDocumentBody);
 
-        if (strippedImports.length === 0) {
+        // if none or only one statement, don't sort
+        if (strippedImports.length === 0 || strippedImports.length === 1) {
             return { sortedImports: '', firstRawImportIndex: -1, lastRawImportIndex: -1 }; // nothing to sort
         }
 
