@@ -1,3 +1,7 @@
+import {
+    SubgroupingPreference,
+    RawSubgroupingPreference,
+} from './../types/grouping-preference.model';
 import { injectable } from 'tsyringe';
 import * as vscode from 'vscode';
 
@@ -15,62 +19,88 @@ import fs = require('fs');
  */
 @injectable()
 export class ExtensionSettings implements IExtensionSettings {
-    private get extensionConfig() {
-        return vscode.workspace.getConfiguration('dartimportsorter');
-    }
-
-    private get projectRootUri(): vscode.Uri {
-        return vscode.workspace.workspaceFolders![0].uri;
-    }
-
     get leaveEmptyLinesBetweenImports(): boolean {
-        return this.extensionConfig.get('leaveEmptyLinesBetweenGroups') as boolean;
+        return this.#extensionConfig.get('leaveEmptyLinesBetweenGroups') as boolean;
     }
 
     get sortingRules(): GroupingPreference[] {
-        return this.getSortingRules();
+        return this.#getSortingRules();
     }
 
     get sortOnSaveEnabled(): boolean {
-        return this.extensionConfig.get('sortOnSave') as boolean;
+        return this.#extensionConfig.get('sortOnSave') as boolean;
     }
 
     get projectName(): string {
-        return this.getProjectNameFromPubspecFile(this.getPubspecFile());
+        return this.#getProjectNameFromPubspecFile(this.#getPubspecFile());
     }
 
-    private getSortingRules() {
-        const rawSortingRules = this.extensionConfig.get(
+    get #extensionConfig() {
+        return vscode.workspace.getConfiguration('dartimportsorter');
+    }
+
+    get #projectRootUri(): vscode.Uri {
+        return vscode.workspace.workspaceFolders![0].uri;
+    }
+
+    #getSortingRules(): GroupingPreference[] {
+        const rawSortingRules = this.#extensionConfig.get(
             'matchingRules'
         ) as RawGroupingPreference[];
 
-        return this.getParsedSortingRules(rawSortingRules);
+        return this.#getParsedSortingRules(rawSortingRules);
     }
 
-    private getParsedSortingRules(rawSortingRules: RawGroupingPreference[]): GroupingPreference[] {
-        let rules = this.parseRawRules(rawSortingRules);
+    #getParsedSortingRules(rawSortingRules: RawGroupingPreference[]): GroupingPreference[] {
+        let rules = this.#parseRawRules(rawSortingRules);
 
-        rules = this.replacePlaceHoldersInRules(rules);
+        rules = this.#replacePlaceHoldersInRules(rules);
 
         return rules;
     }
 
-    private parseRawRules(rawSortingRules: RawGroupingPreference[]) {
+    #parseRawRules(rawSortingRules: RawGroupingPreference[]): GroupingPreference[] {
         return rawSortingRules.map((rule) => {
             return {
+                _type: 'GroupingPreference',
+                label: rule.label,
                 order: rule.order,
                 regex: RegExp(rule.regex, rule.regexFlags.join('')),
+                subgroupSortingRules: this.#parseRawSubgroupingRules(rule.rawSubgroupSortingRules),
             };
         });
     }
 
-    private replacePlaceHoldersInRules(rules: GroupingPreference[]) {
+    #parseRawSubgroupingRules(
+        rawSubgroupSortingRules?: RawSubgroupingPreference[]
+    ): SubgroupingPreference[] | undefined {
+        if (rawSubgroupSortingRules === undefined) {
+            return undefined;
+        }
+
+        return rawSubgroupSortingRules
+            .map<SubgroupingPreference>((rule) => {
+                return {
+                    _type: 'SubgroupingPreference',
+                    label: rule.label,
+                    order: rule.order,
+                    regex: RegExp(rule.regex, rule.regexFlags.join('')),
+                };
+            })
+            .map((rule) => {
+                return this.#replacePlaceholderWithProjectName(rule);
+            });
+    }
+
+    #replacePlaceHoldersInRules<T extends GroupingPreference | SubgroupingPreference>(
+        rules: T[]
+    ): T[] {
         return rules.map((rule) => {
-            return this.replacePlaceholderWithProjectName(rule);
+            return this.#replacePlaceholderWithProjectName(rule);
         });
     }
 
-    private getProjectNameFromPubspecFile(pubspecContents: string): string {
+    #getProjectNameFromPubspecFile(pubspecContents: string): string {
         const nameProperty = pubspecContents
             .split('\n')
             .find((property) => Utils.removeSpaces(property.split(':')[0]) === 'name');
@@ -86,20 +116,23 @@ export class ExtensionSettings implements IExtensionSettings {
         return Utils.removeNewLines(Utils.removeSpaces(nameProperty.split(':')[1]));
     }
 
-    private getPubspecFile(): string {
-        return fs.readFileSync(this.projectRootUri.fsPath + '/pubspec.yaml').toString();
+    #getPubspecFile(): string {
+        return fs.readFileSync(this.#projectRootUri.fsPath + '/pubspec.yaml').toString();
     }
 
-    private pubspecFileExists(): boolean {
-        return fs.readdirSync(this.projectRootUri.fsPath).includes('pubspec.yaml');
+    #pubspecFileExists(): boolean {
+        return fs.readdirSync(this.#projectRootUri.fsPath).includes('pubspec.yaml');
     }
 
-    private replacePlaceholderWithProjectName(rule: GroupingPreference) {
-        if (!this.pubspecFileExists()) {
+    #replacePlaceholderWithProjectName<T extends GroupingPreference | SubgroupingPreference>(
+        rule: T
+    ): T {
+        if (!this.#pubspecFileExists()) {
             return rule;
         }
 
         rule.regex = new RegExp(rule.regex.source.replace('<app_name>', this.projectName));
+
         return rule;
     }
 }

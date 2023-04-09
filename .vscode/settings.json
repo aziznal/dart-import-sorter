@@ -17,4 +17,5 @@
         "pubspec"
     ],
     "editor.formatOnSave": true,
+    "typescript.tsdk": "node_modules/typescript/lib",
 }
