@@ -127,6 +127,58 @@ You project name is detected automatically from pubspec.yaml and replaces `<app_
 
 If you don't provide custom rules in settings.json, then the extension will use these rules by default. If you provide any configuration whatsoever, then the extension will use only your configuration, completely disregarding the defaults.
 
+### Sorting Within Groups
+
+You can set the extension to sort your imports within each sorted group according to the following rules:
+
+```json
+[
+    {
+        "label": "Dart",
+        "regex": "^dart:.*$",
+        "regexFlags": ["m"],
+        "order": 1,
+    },
+    {
+        "label": "Flutter",
+        "regex": "^package:flutter/.*$",
+        "regexFlags": ["m"],
+        "order": 10,
+    },
+    {
+        "label": "Package imports that are NOT your app",
+        "regex": "^package:(?!<app_name>).*$",
+        "regexFlags": ["m"],
+        "order": 100,
+    },
+    {
+        "label": "Package imports that ARE your app as well as relative imports",
+        "regex": "^package:<app_name>.*$|^\\..*$",
+        "regexFlags": ["m"],
+        "order": 101,
+        "subgroupSortingRules": [
+            {
+                "label": "Package imports that ARE your app",
+                "regex": "^package:<app_name>.*$",
+                "regexFlags": ["m"],
+                "order": 1,
+            },
+            {
+                "label": "Relative",
+                "regex": "^\\..*$",
+                "regexFlags": ["m"],
+                "order": 2,
+            }
+    }
+]
+```
+
+In the above example, imports are first grouped together, then sorted within each group according to the `subgroupSortingRules` property.
+
+Since the `subgroupSortingRules` property is only defined for the last group, the other groups imports are sorted alphabetically.
+
+For the last group, app imports are placed first, then relative imports. More complex sorting rules can be defined for each group.
+
 ### Other Settings
 
 ```jsonc
