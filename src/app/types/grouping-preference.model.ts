@@ -11,12 +11,12 @@ export type RawGroupingPreference = {
     regex: string;
     order: number;
     regexFlags: string[];
-    subgroupSortingRules?: RawSubgroupingPreference[];
+    rawSubgroupSortingRules?: RawSubgroupingPreference[];
 };
 
 export type SubgroupingPreference = {
     label: string;
-    regex: string;
+    regex: RegExp;
     order: number;
 };
 

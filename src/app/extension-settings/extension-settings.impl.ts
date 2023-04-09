@@ -1,3 +1,7 @@
+import {
+    SubgroupingPreference,
+    RawSubgroupingPreference,
+} from './../types/grouping-preference.model';
 import { injectable } from 'tsyringe';
 import * as vscode from 'vscode';
 
@@ -39,7 +43,7 @@ export class ExtensionSettings implements IExtensionSettings {
         return vscode.workspace.workspaceFolders![0].uri;
     }
 
-    #getSortingRules() {
+    #getSortingRules(): GroupingPreference[] {
         const rawSortingRules = this.#extensionConfig.get(
             'matchingRules'
         ) as RawGroupingPreference[];
@@ -61,12 +65,34 @@ export class ExtensionSettings implements IExtensionSettings {
                 label: rule.label,
                 order: rule.order,
                 regex: RegExp(rule.regex, rule.regexFlags.join('')),
-                subgroupSortingRules: rule.subgroupSortingRules,
+                subgroupSortingRules: this.#parseRawSubgroupingRules(rule.rawSubgroupSortingRules),
             };
         });
     }
 
-    #replacePlaceHoldersInRules(rules: GroupingPreference[]) {
+    #parseRawSubgroupingRules(
+        rawSubgroupSortingRules?: RawSubgroupingPreference[]
+    ): SubgroupingPreference[] | undefined {
+        if (rawSubgroupSortingRules === undefined) {
+            return undefined;
+        }
+
+        return rawSubgroupSortingRules
+            .map<SubgroupingPreference>((rule) => {
+                return {
+                    label: rule.label,
+                    order: rule.order,
+                    regex: RegExp(rule.regex, rule.regexFlags.join('')),
+                };
+            })
+            .map((rule) => {
+                return this.#replacePlaceholderWithProjectName(rule);
+            });
+    }
+
+    #replacePlaceHoldersInRules<T extends GroupingPreference | SubgroupingPreference>(
+        rules: T[]
+    ): T[] {
         return rules.map((rule) => {
             return this.#replacePlaceholderWithProjectName(rule);
         });
@@ -96,12 +122,15 @@ export class ExtensionSettings implements IExtensionSettings {
         return fs.readdirSync(this.#projectRootUri.fsPath).includes('pubspec.yaml');
     }
 
-    #replacePlaceholderWithProjectName(rule: GroupingPreference) {
+    #replacePlaceholderWithProjectName<T extends GroupingPreference | SubgroupingPreference>(
+        rule: T
+    ): T {
         if (!this.#pubspecFileExists()) {
             return rule;
         }
 
         rule.regex = new RegExp(rule.regex.source.replace('<app_name>', this.projectName));
+
         return rule;
     }
 }
