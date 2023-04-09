@@ -55,11 +55,13 @@ export class ExtensionSettings implements IExtensionSettings {
         return rules;
     }
 
-    private parseRawRules(rawSortingRules: RawGroupingPreference[]) {
+    private parseRawRules(rawSortingRules: RawGroupingPreference[]): GroupingPreference[] {
         return rawSortingRules.map((rule) => {
             return {
+                label: rule.label,
                 order: rule.order,
                 regex: RegExp(rule.regex, rule.regexFlags.join('')),
+                subgroupSortingRules: rule.subgroupSortingRules,
             };
         });
     }
