@@ -105,26 +105,31 @@ const DEFAULT_SETTINGS: IExtensionSettings = {
     sortOnSaveEnabled: false,
     sortingRules: [
         {
+            _type: 'GroupingPreference',
             label: 'Dart',
             order: 1,
             regex: RegExp('^dart:.*$', 'm'),
         },
         {
+            _type: 'GroupingPreference',
             label: 'Flutter',
             order: 1,
             regex: RegExp('^package:flutter/.*$', 'm'),
         },
         {
+            _type: 'GroupingPreference',
             label: 'Any non-app Packages',
             order: 1,
             regex: RegExp('^package:(?!gym_app).*$', 'm'),
         },
         {
+            _type: 'GroupingPreference',
             label: 'Gym App',
             order: 1,
             regex: RegExp('^package:gym_app.*$', 'm'),
         },
         {
+            _type: 'GroupingPreference',
             label: 'Relative Imports',
             order: 1,
             regex: RegExp('^\\..*$', 'm'),

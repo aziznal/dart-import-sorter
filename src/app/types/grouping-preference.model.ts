@@ -1,4 +1,5 @@
 export type RawSubgroupingPreference = {
+    _type: 'RawSubgroupingPreference';
     label: string;
     regex: string;
     order: number;
@@ -7,6 +8,7 @@ export type RawSubgroupingPreference = {
 
 /** The model for values provided in settings.json */
 export type RawGroupingPreference = {
+    _type: 'RawGroupingPreference';
     label: string;
     regex: string;
     order: number;
@@ -14,16 +16,18 @@ export type RawGroupingPreference = {
     rawSubgroupSortingRules?: RawSubgroupingPreference[];
 };
 
-export type SubgroupingPreference = {
+export interface SubgroupingPreference {
+    _type: 'SubgroupingPreference';
     label: string;
     regex: RegExp;
     order: number;
-};
+}
 
 /** The model that the sorting algorithm uses */
-export type GroupingPreference = {
+export interface GroupingPreference {
+    _type: 'GroupingPreference';
     label: string;
     regex: RegExp;
     order: number;
     subgroupSortingRules?: SubgroupingPreference[];
-};
+}

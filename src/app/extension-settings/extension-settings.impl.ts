@@ -62,6 +62,7 @@ export class ExtensionSettings implements IExtensionSettings {
     #parseRawRules(rawSortingRules: RawGroupingPreference[]): GroupingPreference[] {
         return rawSortingRules.map((rule) => {
             return {
+                _type: 'GroupingPreference',
                 label: rule.label,
                 order: rule.order,
                 regex: RegExp(rule.regex, rule.regexFlags.join('')),
@@ -80,6 +81,7 @@ export class ExtensionSettings implements IExtensionSettings {
         return rawSubgroupSortingRules
             .map<SubgroupingPreference>((rule) => {
                 return {
+                    _type: 'SubgroupingPreference',
                     label: rule.label,
                     order: rule.order,
                     regex: RegExp(rule.regex, rule.regexFlags.join('')),

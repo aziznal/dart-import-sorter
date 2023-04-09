@@ -9,6 +9,7 @@ describe('Default extension settings', () => {
             sortOnSaveEnabled: true,
             sortingRules: [
                 {
+                    _type: 'GroupingPreference',
                     label: 'test',
                     order: 123,
                     regex: RegExp('^.*$'),
