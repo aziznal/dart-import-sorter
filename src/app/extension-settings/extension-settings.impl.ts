@@ -15,47 +15,47 @@ import fs = require('fs');
  */
 @injectable()
 export class ExtensionSettings implements IExtensionSettings {
-    private get extensionConfig() {
-        return vscode.workspace.getConfiguration('dartimportsorter');
-    }
-
-    private get projectRootUri(): vscode.Uri {
-        return vscode.workspace.workspaceFolders![0].uri;
-    }
-
     get leaveEmptyLinesBetweenImports(): boolean {
-        return this.extensionConfig.get('leaveEmptyLinesBetweenGroups') as boolean;
+        return this.#extensionConfig.get('leaveEmptyLinesBetweenGroups') as boolean;
     }
 
     get sortingRules(): GroupingPreference[] {
-        return this.getSortingRules();
+        return this.#getSortingRules();
     }
 
     get sortOnSaveEnabled(): boolean {
-        return this.extensionConfig.get('sortOnSave') as boolean;
+        return this.#extensionConfig.get('sortOnSave') as boolean;
     }
 
     get projectName(): string {
-        return this.getProjectNameFromPubspecFile(this.getPubspecFile());
+        return this.#getProjectNameFromPubspecFile(this.#getPubspecFile());
     }
 
-    private getSortingRules() {
-        const rawSortingRules = this.extensionConfig.get(
+    get #extensionConfig() {
+        return vscode.workspace.getConfiguration('dartimportsorter');
+    }
+
+    get #projectRootUri(): vscode.Uri {
+        return vscode.workspace.workspaceFolders![0].uri;
+    }
+
+    #getSortingRules() {
+        const rawSortingRules = this.#extensionConfig.get(
             'matchingRules'
         ) as RawGroupingPreference[];
 
-        return this.getParsedSortingRules(rawSortingRules);
+        return this.#getParsedSortingRules(rawSortingRules);
     }
 
-    private getParsedSortingRules(rawSortingRules: RawGroupingPreference[]): GroupingPreference[] {
-        let rules = this.parseRawRules(rawSortingRules);
+    #getParsedSortingRules(rawSortingRules: RawGroupingPreference[]): GroupingPreference[] {
+        let rules = this.#parseRawRules(rawSortingRules);
 
-        rules = this.replacePlaceHoldersInRules(rules);
+        rules = this.#replacePlaceHoldersInRules(rules);
 
         return rules;
     }
 
-    private parseRawRules(rawSortingRules: RawGroupingPreference[]): GroupingPreference[] {
+    #parseRawRules(rawSortingRules: RawGroupingPreference[]): GroupingPreference[] {
         return rawSortingRules.map((rule) => {
             return {
                 label: rule.label,
@@ -66,13 +66,13 @@ export class ExtensionSettings implements IExtensionSettings {
         });
     }
 
-    private replacePlaceHoldersInRules(rules: GroupingPreference[]) {
+    #replacePlaceHoldersInRules(rules: GroupingPreference[]) {
         return rules.map((rule) => {
-            return this.replacePlaceholderWithProjectName(rule);
+            return this.#replacePlaceholderWithProjectName(rule);
         });
     }
 
-    private getProjectNameFromPubspecFile(pubspecContents: string): string {
+    #getProjectNameFromPubspecFile(pubspecContents: string): string {
         const nameProperty = pubspecContents
             .split('\n')
             .find((property) => Utils.removeSpaces(property.split(':')[0]) === 'name');
@@ -88,16 +88,16 @@ export class ExtensionSettings implements IExtensionSettings {
         return Utils.removeNewLines(Utils.removeSpaces(nameProperty.split(':')[1]));
     }
 
-    private getPubspecFile(): string {
-        return fs.readFileSync(this.projectRootUri.fsPath + '/pubspec.yaml').toString();
+    #getPubspecFile(): string {
+        return fs.readFileSync(this.#projectRootUri.fsPath + '/pubspec.yaml').toString();
     }
 
-    private pubspecFileExists(): boolean {
-        return fs.readdirSync(this.projectRootUri.fsPath).includes('pubspec.yaml');
+    #pubspecFileExists(): boolean {
+        return fs.readdirSync(this.#projectRootUri.fsPath).includes('pubspec.yaml');
     }
 
-    private replacePlaceholderWithProjectName(rule: GroupingPreference) {
-        if (!this.pubspecFileExists()) {
+    #replacePlaceholderWithProjectName(rule: GroupingPreference) {
+        if (!this.#pubspecFileExists()) {
             return rule;
         }
 
