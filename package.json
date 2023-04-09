@@ -74,6 +74,36 @@
                             "order": {
                                 "type": "number",
                                 "description": "The order in which the group matching this rule will appear compared to other groups"
+                            },
+                            "subgroupSortingRules": {
+                                "type": "array",
+                                "description": "List of rules that will be used to sort the imports within this group",
+                                "items": {
+                                    "type": "object",
+                                    "title": "subgroup sorting rule",
+                                    "properties": {
+                                        "label": {
+                                            "type": "string",
+                                            "description": "The label of your sorting rule"
+                                        },
+                                        "regex": {
+                                            "type": "string",
+                                            "description": "The regex to match your imports against"
+                                        },
+                                        "regexFlags": {
+                                            "type": "array",
+                                            "description": "List of flags your regex has",
+                                            "items": {
+                                                "type": "string",
+                                                "title": "regex flags"
+                                            }
+                                        },
+                                        "order": {
+                                            "type": "number",
+                                            "description": "The order in which the group matching this rule will appear compared to other groups"
+                                        }
+                                    }
+                                }
                             }
                         }
                     },
