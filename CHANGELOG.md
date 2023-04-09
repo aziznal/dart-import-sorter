@@ -4,6 +4,12 @@ All notable changes to the "dartimportsorter" extension will be documented in th
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.3.2] - 9th April (2023-04-09)
+
+### Added:
+
+-   Ability to sort imports in a group
+
 ## [0.3.1] - 25th March (2023-03-25)
 
 ### Fixed:
