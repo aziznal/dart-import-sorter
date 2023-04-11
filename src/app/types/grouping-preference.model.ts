@@ -3,7 +3,7 @@ export type RawSubgroupingPreference = {
     label: string;
     regex: string;
     order: number;
-    regexFlags: string[];
+    regexFlags?: string[];
 };
 
 /** The model for values provided in settings.json */
@@ -12,8 +12,8 @@ export type RawGroupingPreference = {
     label: string;
     regex: string;
     order: number;
-    regexFlags: string[];
-    rawSubgroupSortingRules?: RawSubgroupingPreference[];
+    regexFlags?: string[];
+    subgroupSortingRules?: RawSubgroupingPreference[];
 };
 
 export interface SubgroupingPreference {

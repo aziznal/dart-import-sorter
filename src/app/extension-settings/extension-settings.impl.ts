@@ -65,8 +65,8 @@ export class ExtensionSettings implements IExtensionSettings {
                 _type: 'GroupingPreference',
                 label: rule.label,
                 order: rule.order,
-                regex: RegExp(rule.regex, rule.regexFlags.join('')),
-                subgroupSortingRules: this.#parseRawSubgroupingRules(rule.rawSubgroupSortingRules),
+                regex: RegExp(rule.regex, rule.regexFlags?.join('')),
+                subgroupSortingRules: this.#parseRawSubgroupingRules(rule.subgroupSortingRules),
             };
         });
     }
@@ -84,7 +84,7 @@ export class ExtensionSettings implements IExtensionSettings {
                     _type: 'SubgroupingPreference',
                     label: rule.label,
                     order: rule.order,
-                    regex: RegExp(rule.regex, rule.regexFlags.join('')),
+                    regex: RegExp(rule.regex, rule.regexFlags?.join('')),
                 };
             })
             .map((rule) => {
