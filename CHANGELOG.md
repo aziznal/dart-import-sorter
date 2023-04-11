@@ -4,6 +4,12 @@ All notable changes to the "dartimportsorter" extension will be documented in th
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.3.3] - 11th April (2023-04-11)
+
+### Fixed:
+
+-   Mismatched key names and nullability in sorting rule model causing parsing to fail
+
 ## [0.3.2] - 9th April (2023-04-09)
 
 ### Added:
