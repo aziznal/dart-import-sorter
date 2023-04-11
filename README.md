@@ -137,19 +137,19 @@ You can set the extension to sort your imports within each sorted group accordin
         "label": "Dart",
         "regex": "^dart:.*$",
         "regexFlags": ["m"],
-        "order": 1,
+        "order": 1
     },
     {
         "label": "Flutter",
         "regex": "^package:flutter/.*$",
         "regexFlags": ["m"],
-        "order": 10,
+        "order": 10
     },
     {
         "label": "Package imports that are NOT your app",
         "regex": "^package:(?!<app_name>).*$",
         "regexFlags": ["m"],
-        "order": 100,
+        "order": 100
     },
     {
         "label": "Package imports that ARE your app as well as relative imports",
@@ -161,14 +161,15 @@ You can set the extension to sort your imports within each sorted group accordin
                 "label": "Package imports that ARE your app",
                 "regex": "^package:<app_name>.*$",
                 "regexFlags": ["m"],
-                "order": 1,
+                "order": 1
             },
             {
                 "label": "Relative",
                 "regex": "^\\..*$",
                 "regexFlags": ["m"],
-                "order": 2,
+                "order": 2
             }
+        ]
     }
 ]
 ```
