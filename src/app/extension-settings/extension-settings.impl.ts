@@ -1,11 +1,8 @@
-import {
-    SubgroupingPreference,
-    RawSubgroupingPreference,
-} from './../types/grouping-preference.model';
+import { SubSortingRule, RawSubSortingRule } from '../types/sorting-rule';
 import { injectable } from 'tsyringe';
 import * as vscode from 'vscode';
 
-import { GroupingPreference, RawGroupingPreference } from '../types/grouping-preference.model';
+import { SortingRule, RawSortingRule } from '../types/sorting-rule';
 
 import { IExtensionSettings } from './extension-settings.interface';
 
@@ -23,7 +20,7 @@ export class ExtensionSettings implements IExtensionSettings {
         return this.#extensionConfig.get('leaveEmptyLinesBetweenGroups') as boolean;
     }
 
-    get sortingRules(): GroupingPreference[] {
+    get sortingRules(): SortingRule[] {
         return this.#getSortingRules();
     }
 
@@ -43,26 +40,24 @@ export class ExtensionSettings implements IExtensionSettings {
         return vscode.workspace.workspaceFolders![0].uri;
     }
 
-    #getSortingRules(): GroupingPreference[] {
-        const rawSortingRules = this.#extensionConfig.get(
-            'matchingRules'
-        ) as RawGroupingPreference[];
+    #getSortingRules(): SortingRule[] {
+        const rawSortingRules = this.#extensionConfig.get('matchingRules') as RawSortingRule[];
 
         return this.#getParsedSortingRules(rawSortingRules);
     }
 
-    #getParsedSortingRules(rawSortingRules: RawGroupingPreference[]): GroupingPreference[] {
+    #getParsedSortingRules(rawSortingRules: RawSortingRule[]): SortingRule[] {
         let rules = this.#parseRawRules(rawSortingRules);
 
-        rules = this.#replacePlaceHoldersInRules(rules);
-
-        return rules;
+        return rules.map((rule) => {
+            return this.#replacePlaceholderWithProjectName(rule);
+        });
     }
 
-    #parseRawRules(rawSortingRules: RawGroupingPreference[]): GroupingPreference[] {
+    #parseRawRules(rawSortingRules: RawSortingRule[]): SortingRule[] {
         return rawSortingRules.map((rule) => {
             return {
-                _type: 'GroupingPreference',
+                _type: 'SortingRule',
                 label: rule.label,
                 order: rule.order,
                 regex: RegExp(rule.regex, rule.regexFlags?.join('')),
@@ -72,16 +67,16 @@ export class ExtensionSettings implements IExtensionSettings {
     }
 
     #parseRawSubgroupingRules(
-        rawSubgroupSortingRules?: RawSubgroupingPreference[]
-    ): SubgroupingPreference[] | undefined {
-        if (rawSubgroupSortingRules === undefined) {
-            return undefined;
+        rawSubgroupSortingRules?: RawSubSortingRule[]
+    ): SubSortingRule[] | undefined {
+        if (!rawSubgroupSortingRules) {
+            return;
         }
 
         return rawSubgroupSortingRules
-            .map<SubgroupingPreference>((rule) => {
+            .map<SubSortingRule>((rule) => {
                 return {
-                    _type: 'SubgroupingPreference',
+                    _type: 'SubSortingRule',
                     label: rule.label,
                     order: rule.order,
                     regex: RegExp(rule.regex, rule.regexFlags?.join('')),
@@ -92,14 +87,6 @@ export class ExtensionSettings implements IExtensionSettings {
             });
     }
 
-    #replacePlaceHoldersInRules<T extends GroupingPreference | SubgroupingPreference>(
-        rules: T[]
-    ): T[] {
-        return rules.map((rule) => {
-            return this.#replacePlaceholderWithProjectName(rule);
-        });
-    }
-
     #getProjectNameFromPubspecFile(pubspecContents: string): string {
         const nameProperty = pubspecContents
             .split('\n')
@@ -107,7 +94,7 @@ export class ExtensionSettings implements IExtensionSettings {
 
         if (nameProperty === undefined) {
             vscode.window.showInformationMessage(
-                'Could not find name property in pubspec.yaml. Your imports may not be sorted correctly until this is fixed.'
+                'Could not find name property in pubspec.yaml. Imports cannot be sorted by project name.'
             );
 
             return '';
@@ -120,14 +107,12 @@ export class ExtensionSettings implements IExtensionSettings {
         return fs.readFileSync(this.#projectRootUri.fsPath + '/pubspec.yaml').toString();
     }
 
-    #pubspecFileExists(): boolean {
+    #hasPubspecFile(): boolean {
         return fs.readdirSync(this.#projectRootUri.fsPath).includes('pubspec.yaml');
     }
 
-    #replacePlaceholderWithProjectName<T extends GroupingPreference | SubgroupingPreference>(
-        rule: T
-    ): T {
-        if (!this.#pubspecFileExists()) {
+    #replacePlaceholderWithProjectName<T extends SortingRule | SubSortingRule>(rule: T): T {
+        if (!this.#hasPubspecFile()) {
             return rule;
         }
 

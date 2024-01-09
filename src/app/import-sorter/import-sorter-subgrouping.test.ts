@@ -10,31 +10,31 @@ const DEFAULT_SETTINGS: IExtensionSettings = {
     sortOnSaveEnabled: false,
     sortingRules: [
         {
-            _type: 'GroupingPreference',
+            _type: 'SortingRule',
             label: 'Dart',
             order: 1,
             regex: RegExp('^dart:.*$', 'm'),
         },
         {
-            _type: 'GroupingPreference',
+            _type: 'SortingRule',
             label: 'Flutter',
             order: 1,
             regex: RegExp('^package:flutter/.*$', 'm'),
         },
         {
-            _type: 'GroupingPreference',
+            _type: 'SortingRule',
             label: 'Any non-app Packages',
             order: 1,
             regex: RegExp('^package:(?!gym_app).*$', 'm'),
         },
         {
-            _type: 'GroupingPreference',
+            _type: 'SortingRule',
             label: 'Gym App',
             order: 1,
             regex: RegExp('^package:gym_app.*$', 'm'),
         },
         {
-            _type: 'GroupingPreference',
+            _type: 'SortingRule',
             label: 'Relative Imports',
             order: 1,
             regex: RegExp('^\\..*$', 'm'),
@@ -65,19 +65,19 @@ import 'package:mockito/mockito.dart';`;
             leaveEmptyLinesBetweenImports: true,
             sortingRules: [
                 {
-                    _type: 'GroupingPreference',
+                    _type: 'SortingRule',
                     label: 'All',
                     order: 1,
                     regex: RegExp('.*', 'm'),
                     subgroupSortingRules: [
                         {
-                            _type: 'SubgroupingPreference',
+                            _type: 'SubSortingRule',
                             label: 'Package Imports',
                             order: 1,
                             regex: RegExp('^package:.*$', 'm'),
                         },
                         {
-                            _type: 'SubgroupingPreference',
+                            _type: 'SubSortingRule',
                             label: 'Dart',
                             order: 2,
                             regex: RegExp('^dart:.*$', 'm'),
@@ -113,31 +113,31 @@ import 'package:gym_app/something.dart';`;
             leaveEmptyLinesBetweenImports: true,
             sortingRules: [
                 {
-                    _type: 'GroupingPreference',
+                    _type: 'SortingRule',
                     label: 'Dart',
                     order: 1,
                     regex: RegExp('^dart:.*$', 'm'),
                 },
                 {
-                    _type: 'GroupingPreference',
+                    _type: 'SortingRule',
                     label: 'Packages that are not this app',
                     order: 2,
                     regex: RegExp('^package:(?!gym_app).*$'),
                 },
                 {
-                    _type: 'GroupingPreference',
+                    _type: 'SortingRule',
                     label: 'Packages that are this app and relative imports',
                     order: 3,
                     regex: RegExp('^(package:gym_app|\\.).*$'),
                     subgroupSortingRules: [
                         {
-                            _type: 'SubgroupingPreference',
+                            _type: 'SubSortingRule',
                             label: 'Package Imports',
                             order: 1,
                             regex: RegExp('^package:gym_app.*$', 'm'),
                         },
                         {
-                            _type: 'SubgroupingPreference',
+                            _type: 'SubSortingRule',
                             label: 'Relative Imports',
                             order: 2,
                             regex: RegExp('^\\..*$', 'm'),
@@ -177,19 +177,19 @@ import 'package:gym_app/something.dart';`;
             leaveEmptyLinesBetweenImports: true,
             sortingRules: [
                 {
-                    _type: 'GroupingPreference',
+                    _type: 'SortingRule',
                     label: 'Dart',
                     order: 1,
                     regex: RegExp('^dart:.*$', 'm'),
                 },
                 {
-                    _type: 'GroupingPreference',
+                    _type: 'SortingRule',
                     label: 'Packages that are not this app',
                     order: 2,
                     regex: RegExp('^package:(?!gym_app).*$'),
                 },
                 {
-                    _type: 'GroupingPreference',
+                    _type: 'SortingRule',
                     label: 'Packages that are this app and relative imports',
                     order: 3,
                     regex: RegExp('^(package:gym_app|\\.).*$'),
@@ -228,25 +228,25 @@ import 'package:gym_app/something.dart';`;
             leaveEmptyLinesBetweenImports: true,
             sortingRules: [
                 {
-                    _type: 'GroupingPreference',
+                    _type: 'SortingRule',
                     label: 'All',
                     order: 1,
                     regex: RegExp('.*', 'm'),
                     subgroupSortingRules: [
                         {
-                            _type: 'SubgroupingPreference',
+                            _type: 'SubSortingRule',
                             label: 'Packages that are not this app',
                             order: 1,
                             regex: RegExp('^package:(?!gym_app).*$'),
                         },
                         {
-                            _type: 'SubgroupingPreference',
+                            _type: 'SubSortingRule',
                             label: 'Packages that are this app',
                             order: 2,
                             regex: RegExp('^package:gym_app.*$', 'm'),
                         },
                         {
-                            _type: 'SubgroupingPreference',
+                            _type: 'SubSortingRule',
                             label: 'Dart',
                             order: 3,
                             regex: RegExp('^dart:.*$', 'm'),

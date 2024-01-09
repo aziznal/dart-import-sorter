@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { ImportStatement } from './../types/import-statement.model';
+import { ImportStatement } from '../types/import-statement';
 import { ImportUtils } from './import-utils';
 
 describe('Import Utils', () => {

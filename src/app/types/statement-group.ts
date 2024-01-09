@@ -1,9 +1,9 @@
-import { SubgroupingPreference } from './grouping-preference.model';
-import { ImportStatement } from './import-statement.model';
+import { SubSortingRule } from './sorting-rule';
+import { ImportStatement } from './import-statement';
 
-export interface StatementGroup {
+export type StatementGroup = {
     groupRegex: RegExp;
     imports: ImportStatement[];
     order: number;
-    subgroupSortingRules?: SubgroupingPreference[];
-}
+    subgroupSortingRules?: SubSortingRule[];
+};

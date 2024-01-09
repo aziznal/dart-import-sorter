@@ -1,7 +1,10 @@
+export type ReplaceRangeInFileOptions = {
+    from: number;
+    to: number;
+    replacement: string;
+};
+
 export interface IFileInteractor {
     read(filepath: string): string;
-
-    write(filepath: string): string;
-
-    replace(filepath: string, from: number, to: number, withLines: string): void;
+    replace(options: ReplaceRangeInFileOptions): void;
 }

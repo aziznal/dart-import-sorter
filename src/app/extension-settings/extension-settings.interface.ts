@@ -1,9 +1,9 @@
-import { GroupingPreference } from '../types/grouping-preference.model';
+import { SortingRule } from '../types/sorting-rule';
 
 export interface IExtensionSettings {
     get leaveEmptyLinesBetweenImports(): boolean;
 
-    get sortingRules(): GroupingPreference[];
+    get sortingRules(): SortingRule[];
 
     get sortOnSaveEnabled(): boolean;
 

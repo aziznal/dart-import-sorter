@@ -1,4 +1,4 @@
-import { ImportStatement } from '../types/import-statement.model';
+import { ImportStatement } from '../types/import-statement';
 import { StatementGroup } from '../types/statement-group';
 
 export class ImportUtils {

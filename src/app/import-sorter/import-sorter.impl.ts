@@ -1,7 +1,7 @@
-import { SubgroupingPreference, GroupingPreference } from './../types/grouping-preference.model';
+import { SubSortingRule, SortingRule } from '../types/sorting-rule';
 import { inject, injectable } from 'tsyringe';
 
-import { ImportStatement } from '../types/import-statement.model';
+import { ImportStatement } from '../types/import-statement';
 
 import { IExtensionSettings } from '../extension-settings/extension-settings.interface';
 import { IImportSorter, SortingResult } from './import-sorter.interface';
@@ -17,63 +17,59 @@ export class ImportSorter implements IImportSorter {
     constructor(@inject('IExtensionSettings') public settings: IExtensionSettings) {}
 
     sortImports(rawDocumentBody: string): SortingResult {
-        const strippedImports = ImportUtils.findAllImports(rawDocumentBody);
+        const imports = ImportUtils.findAllImports(rawDocumentBody);
 
         // if none or only one statement, don't sort
-        if (strippedImports.length === 0 || strippedImports.length === 1) {
+        if (imports.length === 0 || imports.length === 1) {
             return { sortedImports: '', firstRawImportIndex: -1, lastRawImportIndex: -1 }; // nothing to sort
         }
 
-        const groups = this.#groupImports(strippedImports, this.settings.sortingRules);
+        const groups = this.#groupImports(imports, this.settings.sortingRules);
 
         groups.forEach((group) => {
-            // If group doesn't have subgroup sorting rules, sort alphabetically
-            if (group.subgroupSortingRules !== undefined) {
-                group.imports = this.#sortWithinGroup(group.imports, group.subgroupSortingRules);
-
-                return;
-            } else {
+            if (!group.subgroupSortingRules) {
                 group.imports = ImportUtils.sortAlphabetically(group.imports);
+                return;
             }
+
+            group.imports = this.#sortGroup(group.imports, group.subgroupSortingRules);
         });
 
         const nonEmptyGroups = ImportUtils.removeEmptyGroups(groups);
 
         return {
             sortedImports: this.#flattenImportGroups(nonEmptyGroups),
-            firstRawImportIndex: ImportUtils.lineNumberOfFirstImport(strippedImports),
-            lastRawImportIndex: ImportUtils.lineNumberOfLastImport(strippedImports),
+            firstRawImportIndex: ImportUtils.lineNumberOfFirstImport(imports),
+            lastRawImportIndex: ImportUtils.lineNumberOfLastImport(imports),
         };
     }
 
     #groupImports(
-        strippedImports: ImportStatement[],
-        sortingRules: GroupingPreference[] | SubgroupingPreference[]
+        imports: ImportStatement[],
+        rules: SortingRule[] | SubSortingRule[]
     ): StatementGroup[] {
-        let statements = strippedImports.slice();
+        let statements = imports.slice();
 
         const groups: StatementGroup[] = [];
 
-        sortingRules.forEach((preference) => {
+        rules.forEach((rule) => {
             const matchingStatements = statements.filter((statement) =>
-                preference.regex.test(statement.path)
+                rule.regex.test(statement.path)
             );
 
             groups.push({
-                groupRegex: preference.regex,
-                order: preference.order,
+                groupRegex: rule.regex,
+                order: rule.order,
                 imports: matchingStatements,
                 subgroupSortingRules:
-                    preference._type === 'GroupingPreference'
-                        ? preference.subgroupSortingRules
-                        : undefined,
+                    rule._type === 'SortingRule' ? rule.subgroupSortingRules : undefined,
             });
 
-            // remove matching statements so they don't match again with later regex
+            // remove matching statements so they don't match again later
             statements = statements.filter((statement) => !matchingStatements.includes(statement));
         });
 
-        // if there are remaining imports that don't match anything, throw them at the end
+        // any non-matching statements go at the end
         if (statements.length > 0) {
             groups.push({
                 groupRegex: /.*/gm,
@@ -85,27 +81,24 @@ export class ImportSorter implements IImportSorter {
         return groups;
     }
 
-    #sortWithinGroup(
-        imports: ImportStatement[],
-        sortingRules: SubgroupingPreference[]
-    ): ImportStatement[] {
+    #sortGroup(imports: ImportStatement[], rules: SubSortingRule[]): ImportStatement[] {
         let unsortedStatements = imports.slice();
         let sortedStatements: ImportStatement[] = [];
 
-        sortingRules.forEach((preference) => {
+        rules.forEach((rule) => {
             const matchingStatements = unsortedStatements.filter((statement) =>
-                preference.regex.test(statement.path)
+                rule.regex.test(statement.path)
             );
 
             sortedStatements.push(...matchingStatements);
 
-            // remove matching statements so they don't match again with later regex
+            // remove matching statements so they don't match again later
             unsortedStatements = unsortedStatements.filter(
                 (statement) => !matchingStatements.includes(statement)
             );
         });
 
-        // if there are remaining imports that don't match anything, throw them at the end
+        // any non-matching statements go at the end
         if (unsortedStatements.length > 0) {
             sortedStatements.push(...unsortedStatements);
         }
